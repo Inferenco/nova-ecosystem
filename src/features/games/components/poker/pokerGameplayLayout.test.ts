@@ -23,7 +23,8 @@ describe("poker mobile viewport buckets", () => {
     expect(derivePokerMobileViewportBuckets(360, 760)).toEqual({
       widthBucket: "w360",
       heightBucket: "h760",
-      compact: true
+      compact: true,
+      scrollable: true
     });
   });
 
@@ -31,7 +32,17 @@ describe("poker mobile viewport buckets", () => {
     expect(derivePokerMobileViewportBuckets(430, 844)).toEqual({
       widthBucket: "w430",
       heightBucket: "h860",
-      compact: false
+      compact: false,
+      scrollable: false
+    });
+  });
+
+  it("allows scrolling inside short embedded browser viewports", () => {
+    expect(derivePokerMobileViewportBuckets(390, 620)).toEqual({
+      widthBucket: "w390",
+      heightBucket: "h760",
+      compact: true,
+      scrollable: true
     });
   });
 });

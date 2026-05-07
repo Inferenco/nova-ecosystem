@@ -9,6 +9,7 @@ export interface PokerMobileViewportBuckets {
   widthBucket: "w360" | "w390" | "w430" | "wWide";
   heightBucket: "h760" | "h860" | "hTall";
   compact: boolean;
+  scrollable: boolean;
 }
 
 export function resolvePokerLayoutMode({
@@ -32,6 +33,7 @@ export function derivePokerMobileViewportBuckets(
   return {
     widthBucket,
     heightBucket,
-    compact: width <= 390 || height <= 760
+    compact: width <= 390 || height <= 760,
+    scrollable: height <= 760
   };
 }

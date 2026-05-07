@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { GAME_PHASES, PHASE_NAMES } from "../../config/games";
 import { PokerGameInfoRow } from "./PokerGameInfoRow";
@@ -8,6 +8,19 @@ import { PokerActionDockMobile } from "./PokerActionDockMobile";
 import { derivePokerMobileViewportBuckets } from "./pokerGameplayLayout";
 import type { PokerGameplayLayoutProps } from "./pokerGameplayTypes";
 import { PokerTableStageMobile } from "./PokerTableStageMobile";
+
+function getVisibleViewportSize() {
+  if (typeof window === "undefined") {
+    return { width: 390, height: 844 };
+  }
+
+  const viewport = window.visualViewport;
+
+  return {
+    width: Math.round(viewport?.width ?? window.innerWidth),
+    height: Math.round(viewport?.height ?? window.innerHeight)
+  };
+}
 
 export function MobilePokerGameplayLayout({
   viewModel,
@@ -37,13 +50,13 @@ export function MobilePokerGameplayLayout({
     viewModel.tableSeats.find(({ seat }) => !seat.playerAddress || seat.playerAddress === "0x0")
       ?.actualSeatIndex ?? 0;
   const [buckets, setBuckets] = useState(() =>
-    derivePokerMobileViewportBuckets(
-      typeof window === "undefined" ? 390 : window.innerWidth,
-      typeof window === "undefined" ? 844 : window.innerHeight
-    )
+    derivePokerMobileViewportBuckets(getVisibleViewportSize().width, getVisibleViewportSize().height)
   );
+  const [availableHeight, setAvailableHeight] = useState(() => getVisibleViewportSize().height);
 
   useEffect(() => {
+    if (buckets.scrollable) return;
+
     const previousBodyOverflow = document.body.style.overflow;
     const previousHtmlOverflow = document.documentElement.style.overflow;
     document.body.style.overflow = "hidden";
@@ -53,26 +66,35 @@ export function MobilePokerGameplayLayout({
       document.body.style.overflow = previousBodyOverflow;
       document.documentElement.style.overflow = previousHtmlOverflow;
     };
-  }, []);
+  }, [buckets.scrollable]);
 
   useEffect(() => {
     const updateBuckets = () => {
-      setBuckets(derivePokerMobileViewportBuckets(window.innerWidth, window.innerHeight));
+      const viewport = getVisibleViewportSize();
+      setAvailableHeight(viewport.height);
+      setBuckets(derivePokerMobileViewportBuckets(viewport.width, viewport.height));
     };
 
     updateBuckets();
     window.addEventListener("resize", updateBuckets);
+    window.visualViewport?.addEventListener("resize", updateBuckets);
 
     return () => {
       window.removeEventListener("resize", updateBuckets);
+      window.visualViewport?.removeEventListener("resize", updateBuckets);
     };
   }, []);
+
+  const shellStyle = {
+    "--poker-mobile-available-height": `${availableHeight}px`
+  } as CSSProperties;
 
   return (
     <div
       className={`poker-gameplay-shell poker-gameplay-shell-mobile ${buckets.widthBucket} ${buckets.heightBucket} ${
         buckets.compact ? "is-compact" : ""
-      }`}
+      } ${buckets.scrollable ? "is-scrollable" : ""}`}
+      style={shellStyle}
     >
       <div className="poker-gameplay-mobile-grid">
         <PokerGameplayHeader

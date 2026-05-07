@@ -18,7 +18,7 @@
   --poker-mobile-top-seat-edge: 14%;
   --poker-mobile-top-seat-pill-max: 62px;
   --poker-mobile-top-seat-bet-offset: -28px;
-  height: 100dvh;
+  height: var(--poker-mobile-available-height, 100dvh);
   padding:
     max(6px, env(safe-area-inset-top))
     6px
@@ -27,8 +27,14 @@
   overflow: hidden;
 }
 
+.poker-gameplay-shell-mobile.is-scrollable {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
 .poker-gameplay-mobile-grid {
-  height: 100%;
+  min-height: 100%;
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr) auto auto;
   gap: var(--poker-mobile-gap);

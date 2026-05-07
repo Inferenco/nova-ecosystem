@@ -10,3 +10,5 @@ test-results
 .cedra/
 contracts/games/build
 output
+
+.codex
