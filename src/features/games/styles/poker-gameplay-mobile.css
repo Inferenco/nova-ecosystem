@@ -20,7 +20,7 @@
   --poker-mobile-top-seat-bet-offset: -28px;
   height: var(--poker-mobile-available-height, 100dvh);
   padding:
-    max(6px, env(safe-area-inset-top))
+    6px
     6px
     max(6px, env(safe-area-inset-bottom))
     6px;
