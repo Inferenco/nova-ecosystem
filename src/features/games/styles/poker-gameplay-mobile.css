@@ -706,6 +706,10 @@
   --poker-mobile-gap: 3px;
 }
 
+.poker-gameplay-shell-mobile.h860.is-active-hand {
+  --poker-mobile-stage-h: 316px;
+}
+
 .poker-gameplay-shell-mobile.h860 .poker-gameplay-mobile-grid {
   gap: var(--poker-mobile-gap);
 }

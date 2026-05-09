@@ -88,12 +88,14 @@ export function MobilePokerGameplayLayout({
   const shellStyle = {
     "--poker-mobile-available-height": `${availableHeight}px`
   } as CSSProperties;
+  const handStateClass =
+    viewModel.table.phase === GAME_PHASES.WAITING ? "is-waiting-hand" : "is-active-hand";
 
   return (
     <div
       className={`poker-gameplay-shell poker-gameplay-shell-mobile ${buckets.widthBucket} ${buckets.heightBucket} ${
         buckets.compact ? "is-compact" : ""
-      } ${buckets.scrollable ? "is-scrollable" : ""}`}
+      } ${buckets.scrollable ? "is-scrollable" : ""} ${handStateClass}`}
       style={shellStyle}
     >
       <div className="poker-gameplay-mobile-grid">

@@ -68,4 +68,11 @@ describe("poker mobile gameplay safe area styles", () => {
     expect(css).toContain("--poker-mobile-primary-btn-h: 28px;");
     expect(css).toContain("--poker-mobile-secondary-btn-h: 22px;");
   });
+
+  it("uses the missing waiting-control row space to give active h860 hands a taller stage", () => {
+    const css = readFileSync(join(stylesDir, "poker-gameplay-mobile.css"), "utf8");
+
+    expect(css).toContain(".poker-gameplay-shell-mobile.h860.is-active-hand {");
+    expect(css).toContain("--poker-mobile-stage-h: 316px;");
+  });
 });
