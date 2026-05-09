@@ -28,12 +28,12 @@ describe("poker mobile viewport buckets", () => {
     });
   });
 
-  it("keeps taller/wider phones out of compact mode", () => {
+  it("treats h860 embedded wallet browser heights as scrollable compact mobile space", () => {
     expect(derivePokerMobileViewportBuckets(430, 844)).toEqual({
       widthBucket: "w430",
       heightBucket: "h860",
-      compact: false,
-      scrollable: false
+      compact: true,
+      scrollable: true
     });
   });
 

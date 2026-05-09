@@ -33,7 +33,7 @@ export function derivePokerMobileViewportBuckets(
   return {
     widthBucket,
     heightBucket,
-    compact: width <= 390 || height <= 760,
-    scrollable: height <= 760
+    compact: width <= 390 || height <= 860,
+    scrollable: height <= 860
   };
 }

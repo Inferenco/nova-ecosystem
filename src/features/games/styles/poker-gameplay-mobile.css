@@ -22,8 +22,9 @@
   --poker-mobile-top-seat-edge: 14%;
   --poker-mobile-top-seat-pill-max: 62px;
   --poker-mobile-top-seat-bet-offset: -28px;
+  --poker-mobile-host-bottom-reserve: 0px;
   height: var(--poker-mobile-available-height, 100dvh);
-  padding: 6px;
+  padding: 6px 6px calc(6px + var(--poker-mobile-host-bottom-reserve)) 6px;
   overflow: hidden;
 }
 
@@ -533,11 +534,11 @@
 
 .poker-gameplay-shell-mobile.w390 .poker-gameplay-dock-mobile .poker-gameplay-chip-button,
 .poker-gameplay-shell-mobile.w390 .poker-gameplay-dock-mobile .poker-gameplay-action-button {
-  min-height: 32px;
+  min-height: var(--poker-mobile-primary-btn-h);
 }
 
 .poker-gameplay-shell-mobile.w390 .poker-gameplay-dock-mobile .poker-gameplay-pill-button {
-  min-height: 27px;
+  min-height: var(--poker-mobile-secondary-btn-h);
   font-size: 0.74rem;
 }
 
@@ -641,12 +642,12 @@
 }
 
 .poker-gameplay-shell-mobile.h760 {
-  --poker-mobile-stage-h: 318px;
-  --poker-mobile-dock-pad: 5px;
-  --poker-mobile-primary-btn-h: 30px;
-  --poker-mobile-secondary-btn-h: 24px;
-  --poker-mobile-input-h: 28px;
-  --poker-mobile-gap: 4px;
+  --poker-mobile-stage-h: 264px;
+  --poker-mobile-dock-pad: 3px;
+  --poker-mobile-primary-btn-h: 27px;
+  --poker-mobile-secondary-btn-h: 21px;
+  --poker-mobile-input-h: 24px;
+  --poker-mobile-gap: 2px;
 }
 
 .poker-gameplay-shell-mobile.h760 .poker-gameplay-mobile-grid {
@@ -663,6 +664,90 @@
   min-height: 34px;
 }
 
-.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile {
-  padding-bottom: 8px;
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-dock-avatar {
+  width: 28px;
+  height: 28px;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-card.size-hero {
+  width: 28px;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-dock-value {
+  font-size: 0.78rem;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .games-wallet-text-input {
+  font-size: 0.8rem;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-chip-button,
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-action-button {
+  border-radius: 10px;
+  font-size: 0.74rem;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-pill-button {
+  padding-inline: 5px;
+  font-size: 0.64rem;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-dock-secondary-row {
+  gap: 2px 3px;
+}
+
+.poker-gameplay-shell-mobile.h860 {
+  --poker-mobile-host-bottom-reserve: 76px;
+  --poker-mobile-stage-h: 276px;
+  --poker-mobile-dock-pad: 4px;
+  --poker-mobile-primary-btn-h: 28px;
+  --poker-mobile-secondary-btn-h: 22px;
+  --poker-mobile-input-h: 26px;
+  --poker-mobile-gap: 3px;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-mobile-grid {
+  gap: var(--poker-mobile-gap);
+}
+
+.poker-gameplay-shell-mobile.h860 .games-wallet-header {
+  min-height: 54px;
+  padding-block: 5px;
+}
+
+.poker-gameplay-shell-mobile.h860 .games-wallet-status-bar,
+.poker-gameplay-shell-mobile.h860 .games-wallet-info-row {
+  min-height: 34px;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-dock-avatar {
+  width: 30px;
+  height: 30px;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-card.size-hero {
+  width: 30px;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-dock-value {
+  font-size: 0.82rem;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .games-wallet-text-input {
+  font-size: 0.84rem;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-chip-button,
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-action-button {
+  border-radius: 10px;
+  font-size: 0.78rem;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-pill-button {
+  padding-inline: 6px;
+  font-size: 0.68rem;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-dock-secondary-row {
+  gap: 3px 4px;
 }

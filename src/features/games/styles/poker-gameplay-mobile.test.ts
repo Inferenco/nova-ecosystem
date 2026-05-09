@@ -40,9 +40,32 @@ describe("poker mobile gameplay safe area styles", () => {
     const css = readFileSync(join(stylesDir, "poker-gameplay-mobile.css"), "utf8");
 
     expect(css).toContain(".poker-gameplay-shell-mobile.h760 {");
-    expect(css).toContain("--poker-mobile-primary-btn-h: 30px;");
-    expect(css).toContain("--poker-mobile-secondary-btn-h: 24px;");
+    expect(css).toContain("--poker-mobile-stage-h: 264px;");
+    expect(css).toContain("--poker-mobile-primary-btn-h: 27px;");
+    expect(css).toContain("--poker-mobile-secondary-btn-h: 21px;");
+    expect(css).toContain("--poker-mobile-gap: 2px;");
     expect(css).toContain(".poker-gameplay-dock-mobile.is-passive");
     expect(css).toContain("background: rgba(255, 255, 255, 0.035);");
+  });
+
+  it("keeps h760 dock control heights variable-driven so iPhone-width rules cannot hide the secondary row", () => {
+    const css = readFileSync(join(stylesDir, "poker-gameplay-mobile.css"), "utf8");
+
+    expect(css).toContain("min-height: var(--poker-mobile-primary-btn-h);");
+    expect(css).toContain("min-height: var(--poker-mobile-secondary-btn-h);");
+    expect(css).not.toContain(".poker-gameplay-dock-mobile .poker-gameplay-chip-button {\n  min-height: 32px;");
+    expect(css).not.toContain(".poker-gameplay-dock-mobile .poker-gameplay-pill-button {\n  min-height: 27px;");
+  });
+
+  it("reserves wallet-menu clearance for h860 embedded browser heights", () => {
+    const css = readFileSync(join(stylesDir, "poker-gameplay-mobile.css"), "utf8");
+
+    expect(css).toContain("--poker-mobile-host-bottom-reserve: 0px;");
+    expect(css).toContain("padding: 6px 6px calc(6px + var(--poker-mobile-host-bottom-reserve)) 6px;");
+    expect(css).toContain(".poker-gameplay-shell-mobile.h860 {");
+    expect(css).toContain("--poker-mobile-host-bottom-reserve: 76px;");
+    expect(css).toContain("--poker-mobile-stage-h: 276px;");
+    expect(css).toContain("--poker-mobile-primary-btn-h: 28px;");
+    expect(css).toContain("--poker-mobile-secondary-btn-h: 22px;");
   });
 });
