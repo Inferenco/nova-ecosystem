@@ -45,10 +45,16 @@ export function PokerActionDockMobile({
 }: PokerActionDockMobileProps) {
   const { hero } = viewModel;
   const hiddenCards = hero.cards.some((card) => card === undefined) || !hero.cardsDecrypted;
+  const controlsPassive = !hero.inBettingRound || !hero.isMyTurn || hero.actionLocked;
+  const pendingActionCopy = hero.pendingActionCopy.trim();
+  const showPendingActionCopy = pendingActionCopy.length > 0 && pendingActionCopy.toLowerCase() !== "waiting";
+  const showFooter = hero.canRevealFolded || showPendingActionCopy;
 
   return (
     <section
-      className={`poker-gameplay-dock poker-gameplay-dock-mobile ${compact ? "is-compact" : ""}`}
+      className={`poker-gameplay-dock poker-gameplay-dock-mobile ${compact ? "is-compact" : ""} ${
+        controlsPassive ? "is-passive" : ""
+      }`}
       aria-label="Player actions"
     >
       <div className="poker-gameplay-dock-hero-row">
@@ -200,14 +206,16 @@ export function PokerActionDockMobile({
         </button>
       </div>
 
-      <div className="poker-gameplay-dock-footer">
-        {hero.canRevealFolded ? (
-          <button type="button" className="poker-gameplay-dock-inline-action" onClick={onRevealFoldedCards}>
-            Reveal Cards
-          </button>
-        ) : null}
-        <span className="poker-gameplay-dock-pending">{hero.pendingActionCopy}</span>
-      </div>
+      {showFooter ? (
+        <div className="poker-gameplay-dock-footer">
+          {hero.canRevealFolded ? (
+            <button type="button" className="poker-gameplay-dock-inline-action" onClick={onRevealFoldedCards}>
+              Reveal Cards
+            </button>
+          ) : null}
+          {showPendingActionCopy ? <span className="poker-gameplay-dock-pending">{pendingActionCopy}</span> : null}
+        </div>
+      ) : null}
     </section>
   );
 }

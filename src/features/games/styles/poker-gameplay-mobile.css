@@ -36,7 +36,7 @@
 .poker-gameplay-mobile-grid {
   min-height: 100%;
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+  grid-template-rows: auto auto minmax(var(--poker-mobile-stage-min-h), 1fr) auto auto;
   gap: var(--poker-mobile-gap);
 }
 
@@ -201,6 +201,12 @@
   min-height: var(--poker-mobile-primary-btn-h);
 }
 
+.poker-gameplay-dock-mobile.is-passive {
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
 .poker-gameplay-dock-mobile .poker-gameplay-dock-hero-row {
   align-items: flex-start;
 }
@@ -235,7 +241,7 @@
 }
 
 .poker-gameplay-dock-mobile .poker-gameplay-dock-raise-row {
-  gap: 4px;
+  gap: 3px;
 }
 
 .poker-gameplay-dock-mobile .poker-gameplay-dock-raise-row label {
@@ -243,11 +249,11 @@
 }
 
 .poker-gameplay-dock-mobile .poker-gameplay-dock-slider-row {
-  gap: 8px;
+  gap: 6px;
 }
 
 .poker-gameplay-dock-mobile .poker-gameplay-dock-presets {
-  gap: 6px;
+  gap: 5px;
 }
 
 .poker-gameplay-dock-mobile .poker-gameplay-chip-button,
@@ -266,6 +272,25 @@
 
 .poker-gameplay-dock-mobile .poker-gameplay-dock-secondary-row {
   gap: 4px 5px;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-action-button:disabled,
+.poker-gameplay-dock-mobile .poker-gameplay-chip-button:disabled,
+.poker-gameplay-dock-mobile .poker-gameplay-pill-button:disabled {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.035);
+  border-color: rgba(255, 255, 255, 0.06);
+  color: rgba(214, 224, 236, 0.48);
+  box-shadow: none;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-action-button.raise:disabled,
+.poker-gameplay-dock-mobile .poker-gameplay-action-button.fold:disabled,
+.poker-gameplay-dock-mobile .poker-gameplay-action-button.check:disabled,
+.poker-gameplay-dock-mobile .poker-gameplay-action-button.call:disabled,
+.poker-gameplay-dock-mobile .poker-gameplay-pill-button.danger:disabled {
+  background: rgba(255, 255, 255, 0.035);
+  color: rgba(214, 224, 236, 0.44);
 }
 
 .poker-gameplay-dock-mobile .poker-gameplay-dock-pending {
@@ -620,25 +645,35 @@
   inset-inline: 20px;
 }
 
+.poker-gameplay-shell-mobile.h760 {
+  --poker-mobile-stage-min-h: 270px;
+  --poker-mobile-dock-pad: 5px;
+  --poker-mobile-primary-btn-h: 30px;
+  --poker-mobile-secondary-btn-h: 24px;
+  --poker-mobile-input-h: 28px;
+  --poker-mobile-gap: 4px;
+}
+
 .poker-gameplay-shell-mobile.h760 .poker-gameplay-mobile-grid {
-  gap: 6px;
+  gap: var(--poker-mobile-gap);
 }
 
 .poker-gameplay-shell-mobile.h760 .games-wallet-header {
-  min-height: 64px;
+  min-height: 54px;
+  padding-block: 5px;
 }
 
 .poker-gameplay-shell-mobile.h760 .games-wallet-status-bar,
 .poker-gameplay-shell-mobile.h760 .games-wallet-info-row {
-  min-height: 42px;
+  min-height: 34px;
 }
 
 .poker-gameplay-shell-mobile.h760 .poker-gameplay-stage-mobile .poker-gameplay-stage-surface {
-  min-height: 244px;
+  min-height: var(--poker-mobile-stage-min-h);
 }
 
 .poker-gameplay-shell-mobile.h760 .poker-gameplay-stage-mobile .poker-gameplay-table-oval {
-  inset: 32px 8px 70px;
+  inset: 28px 8px 58px;
 }
 
 .poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile {
