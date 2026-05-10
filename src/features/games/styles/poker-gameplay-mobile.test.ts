@@ -36,6 +36,18 @@ describe("poker mobile gameplay safe area styles", () => {
     expect(css).not.toContain(".poker-gameplay-shell-mobile.h760 .poker-gameplay-stage-mobile .poker-gameplay-table-oval");
   });
 
+  it("sizes community board cards independently from hero cards", () => {
+    const css = readFileSync(join(stylesDir, "poker-gameplay-mobile.css"), "utf8");
+    const boardRule = css.match(
+      /\.poker-gameplay-shell-mobile \.poker-gameplay-board-row \.poker-gameplay-card\.size-board\s*\{(?<body>[^}]*)\}/s
+    );
+
+    expect(boardRule?.groups?.body).toBeDefined();
+    expect(boardRule?.groups?.body).toContain("width: 40px;");
+    expect(css).toContain(".poker-gameplay-shell-mobile.h760 .poker-gameplay-board-row .poker-gameplay-card.size-board");
+    expect(css).toContain("width: 34px;");
+  });
+
   it("uses compact h760 chrome and passive dock styling for embedded wallet browser height", () => {
     const css = readFileSync(join(stylesDir, "poker-gameplay-mobile.css"), "utf8");
 

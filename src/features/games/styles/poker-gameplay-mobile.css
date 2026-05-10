@@ -434,6 +434,10 @@
   gap: 5px;
 }
 
+.poker-gameplay-shell-mobile .poker-gameplay-board-row .poker-gameplay-card.size-board {
+  width: 40px;
+}
+
 .poker-gameplay-shell-mobile .poker-gameplay-seat-avatar {
   width: var(--poker-mobile-seat-avatar);
   height: var(--poker-mobile-seat-avatar);
@@ -699,6 +703,10 @@
 
 .poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-card.size-hero {
   width: 28px;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-board-row .poker-gameplay-card.size-board {
+  width: 34px;
 }
 
 .poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-dock-value {
