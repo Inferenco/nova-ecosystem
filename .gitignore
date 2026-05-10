@@ -10,6 +10,8 @@ output/
 out/
 .svelte-kit/
 .nuxt/
+.vite/
+contracts/games/build/
 
 # Environment variables
 .env
@@ -30,6 +32,7 @@ pnpm-debug.log*
 
 # Testing
 coverage/
+playwright-report/
 test-results/
 
 # Editor directories and files
@@ -43,4 +46,6 @@ test-results/
 .DS_Store
 
 # Misc
+.cedra/
+.codex
 .vercel/
