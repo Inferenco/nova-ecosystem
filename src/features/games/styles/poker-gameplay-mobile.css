@@ -1,0 +1,821 @@
+.poker-gameplay-shell-mobile {
+  --poker-mobile-header-h: 60px;
+  --poker-mobile-status-h: 42px;
+  --poker-mobile-info-h: 38px;
+  --poker-mobile-stage-h: 360px;
+  --poker-mobile-table-aspect: 2.05 / 1;
+  --poker-mobile-table-h: clamp(172px, 26dvh, 232px);
+  --poker-mobile-table-x-gutter: 16px;
+  --poker-mobile-table-center-y: 47%;
+  --poker-mobile-seat-box-w: 72px;
+  --poker-mobile-seat-box-h: 92px;
+  --poker-mobile-seat-avatar: 40px;
+  --poker-mobile-seat-avatar-hero: 44px;
+  --poker-mobile-seat-pill-h: 20px;
+  --poker-mobile-board-card-w: 34px;
+  --poker-mobile-dock-pad: 7px;
+  --poker-mobile-primary-btn-h: 34px;
+  --poker-mobile-secondary-btn-h: 28px;
+  --poker-mobile-input-h: 34px;
+  --poker-mobile-gap: 5px;
+  --poker-mobile-radius: 16px;
+  --poker-mobile-top-seat-edge: 14%;
+  --poker-mobile-top-seat-pill-max: 62px;
+  --poker-mobile-top-seat-bet-offset: -28px;
+  --poker-mobile-host-bottom-reserve: 0px;
+  height: var(--poker-mobile-available-height, 100dvh);
+  padding: 6px 6px calc(6px + var(--poker-mobile-host-bottom-reserve)) 6px;
+  overflow: hidden;
+}
+
+.poker-gameplay-shell-mobile.is-scrollable {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.poker-gameplay-mobile-grid {
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: auto auto minmax(var(--poker-mobile-stage-h), 1fr) auto auto;
+  align-content: stretch;
+  gap: var(--poker-mobile-gap);
+}
+
+.poker-gameplay-mobile-stage-wrap {
+  min-height: 0;
+  height: 100%;
+}
+
+.poker-gameplay-stage-mobile {
+  height: 100%;
+}
+
+.poker-gameplay-stage-mobile .poker-gameplay-seat {
+  width: var(--poker-mobile-seat-box-w);
+  height: var(--poker-mobile-seat-box-h);
+  display: block;
+}
+
+.poker-gameplay-stage-mobile .poker-gameplay-stage-surface {
+  height: 100%;
+  min-height: 0;
+}
+
+.poker-gameplay-stage-mobile .poker-gameplay-table-oval {
+  top: var(--poker-mobile-table-center-y);
+  left: 50%;
+  width: auto;
+  max-width: calc(100% - var(--poker-mobile-table-x-gutter));
+  height: var(--poker-mobile-table-h);
+  aspect-ratio: var(--poker-mobile-table-aspect);
+  transform: translate(-50%, -50%);
+}
+
+.poker-gameplay-stage-mobile .poker-gameplay-seat-top-left {
+  top: 14px;
+  left: var(--poker-mobile-top-seat-edge);
+}
+
+.poker-gameplay-stage-mobile .poker-gameplay-seat-top-right {
+  top: 14px;
+  right: var(--poker-mobile-top-seat-edge);
+}
+
+.poker-gameplay-stage-mobile .poker-gameplay-seat-left {
+  top: 46%;
+  left: -2px;
+  transform: translateY(-50%);
+}
+
+.poker-gameplay-stage-mobile .poker-gameplay-seat-right {
+  top: 46%;
+  right: -2px;
+  transform: translateY(-50%);
+}
+
+.poker-gameplay-stage-mobile .poker-gameplay-seat-bottom {
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 86px;
+  height: 102px;
+}
+
+.poker-gameplay-stage-mobile .poker-gameplay-seat-left .poker-gameplay-seat-bet,
+.poker-gameplay-stage-mobile .poker-gameplay-seat-right .poker-gameplay-seat-bet {
+  top: -12px;
+}
+
+.poker-gameplay-stage-mobile .poker-gameplay-seat-top-left .poker-gameplay-seat-bet,
+.poker-gameplay-stage-mobile .poker-gameplay-seat-top-right .poker-gameplay-seat-bet {
+  top: auto;
+  bottom: var(--poker-mobile-top-seat-bet-offset);
+  max-width: var(--poker-mobile-top-seat-pill-max);
+}
+
+.poker-gameplay-stage-mobile .poker-gameplay-seat-bottom .poker-gameplay-seat-bet {
+  top: -26px;
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-seat-avatar {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-seat-dealer {
+  top: 2px;
+  right: 16px;
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-seat-meta {
+  position: absolute;
+  top: calc(var(--poker-mobile-seat-avatar) + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  gap: 2px;
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-seat-bet {
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-seat-left .poker-gameplay-seat-avatar,
+.poker-gameplay-shell-mobile .poker-gameplay-seat-right .poker-gameplay-seat-avatar {
+  top: 16px;
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-seat-left .poker-gameplay-seat-dealer,
+.poker-gameplay-shell-mobile .poker-gameplay-seat-right .poker-gameplay-seat-dealer {
+  top: 18px;
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-seat-left .poker-gameplay-seat-meta,
+.poker-gameplay-shell-mobile .poker-gameplay-seat-right .poker-gameplay-seat-meta {
+  top: calc(16px + var(--poker-mobile-seat-avatar) + 4px);
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-seat-left .poker-gameplay-seat-bet,
+.poker-gameplay-shell-mobile .poker-gameplay-seat-right .poker-gameplay-seat-bet {
+  top: -12px;
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-seat-revealed-cards {
+  top: calc(var(--poker-mobile-seat-avatar) + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-seat-bottom .poker-gameplay-seat-revealed-cards {
+  top: 2px;
+}
+
+.poker-gameplay-stage-mobile .poker-gameplay-pot-pill {
+  top: 60px;
+}
+
+.poker-gameplay-mobile-dock-wrap {
+  min-height: 0;
+}
+
+.poker-gameplay-mobile-waiting-row,
+.poker-gameplay-mobile-idle-dock {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--poker-mobile-gap);
+  margin-bottom: var(--poker-mobile-gap);
+}
+
+.poker-gameplay-dock-mobile {
+  padding: var(--poker-mobile-dock-pad);
+  border-radius: calc(var(--poker-mobile-radius) + 2px);
+  gap: var(--poker-mobile-gap);
+}
+
+.poker-gameplay-dock-mobile.is-compact {
+  gap: var(--poker-mobile-gap);
+  padding: var(--poker-mobile-dock-pad);
+}
+
+.poker-gameplay-dock-mobile.is-compact .poker-gameplay-action-button,
+.poker-gameplay-dock-mobile.is-compact .poker-gameplay-chip-button {
+  min-height: var(--poker-mobile-primary-btn-h);
+}
+
+.poker-gameplay-dock-mobile.is-passive {
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-dock-hero-row {
+  align-items: flex-start;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-dock-cards {
+  margin-left: auto;
+  gap: 4px;
+}
+
+.poker-gameplay-dock-mobile .games-wallet-text-input {
+  min-height: var(--poker-mobile-input-h);
+  font-size: 0.92rem;
+  padding-inline: 9px;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-dock-avatar {
+  width: 36px;
+  height: 36px;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-dock-label {
+  font-size: 0.62rem;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-dock-value {
+  font-size: 0.98rem;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-card.size-hero {
+  width: var(--poker-mobile-board-card-w);
+  border-radius: 8px;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up {
+  width: 38px;
+  border-radius: 9px;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up .poker-gameplay-card-center,
+.poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up .poker-gameplay-card-corner-br {
+  display: none;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up .poker-gameplay-card-corner-tl {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up .poker-gameplay-card-rank {
+  font-size: 1rem;
+  line-height: 0.95;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up .poker-gameplay-card-suit {
+  margin-top: 1px;
+  font-size: 0.86rem;
+  line-height: 1;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-dock-raise-row {
+  gap: 3px;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-dock-raise-row label {
+  font-size: 0.62rem;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-dock-slider-row {
+  gap: 6px;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-dock-presets {
+  gap: 5px;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-chip-button,
+.poker-gameplay-dock-mobile .poker-gameplay-action-button {
+  min-height: var(--poker-mobile-primary-btn-h);
+  border-radius: 12px;
+  font-size: 0.86rem;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-pill-button {
+  min-height: var(--poker-mobile-secondary-btn-h);
+  padding-inline: 8px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-dock-secondary-row {
+  gap: 4px 5px;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-action-button:disabled,
+.poker-gameplay-dock-mobile .poker-gameplay-chip-button:disabled,
+.poker-gameplay-dock-mobile .poker-gameplay-pill-button:disabled {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.035);
+  border-color: rgba(255, 255, 255, 0.06);
+  color: rgba(214, 224, 236, 0.48);
+  box-shadow: none;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-action-button.raise:disabled,
+.poker-gameplay-dock-mobile .poker-gameplay-action-button.fold:disabled,
+.poker-gameplay-dock-mobile .poker-gameplay-action-button.check:disabled,
+.poker-gameplay-dock-mobile .poker-gameplay-action-button.call:disabled,
+.poker-gameplay-dock-mobile .poker-gameplay-pill-button.danger:disabled {
+  background: rgba(255, 255, 255, 0.035);
+  color: rgba(214, 224, 236, 0.44);
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-dock-pending {
+  font-size: 0.64rem;
+}
+
+.poker-gameplay-mobile-waiting-row .poker-gameplay-action-button,
+.poker-gameplay-mobile-idle-dock .poker-gameplay-action-button {
+  min-height: var(--poker-mobile-primary-btn-h);
+}
+
+.poker-gameplay-shell-mobile .games-wallet-header {
+  min-height: var(--poker-mobile-header-h);
+  padding: 7px 10px;
+}
+
+.poker-gameplay-shell-mobile .games-wallet-header-left {
+  width: 56px;
+}
+
+.poker-gameplay-shell-mobile .games-wallet-header-right {
+  gap: 6px;
+}
+
+.poker-gameplay-shell-mobile .games-wallet-header-center {
+  gap: 8px;
+}
+
+.poker-gameplay-shell-mobile .games-wallet-header-copy {
+  gap: 1px;
+}
+
+.poker-gameplay-shell-mobile .games-wallet-header-logo {
+  width: 26px;
+  height: 26px;
+}
+
+.poker-gameplay-shell-mobile .games-wallet-table-name {
+  font-size: 0.92rem;
+}
+
+.poker-gameplay-shell-mobile .games-wallet-table-meta {
+  font-size: 0.66rem;
+}
+
+.poker-gameplay-shell-mobile .games-wallet-icon-btn {
+  min-height: 38px;
+  padding-inline: 10px;
+  font-size: 0.86rem;
+}
+
+.poker-gameplay-shell-mobile .games-wallet-chat-trigger {
+  min-width: 58px;
+  padding-inline: 9px;
+}
+
+.poker-gameplay-shell-mobile .games-wallet-icon-only {
+  min-width: 38px;
+  padding-inline: 0;
+}
+
+.poker-gameplay-shell-mobile .games-wallet-status-bar {
+  min-height: var(--poker-mobile-status-h);
+  padding: 8px 12px;
+}
+
+.poker-gameplay-shell-mobile .games-wallet-status-bar > p {
+  font-size: 0.86rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.poker-gameplay-shell-mobile .games-wallet-status-actions {
+  margin-left: 8px;
+}
+
+.poker-gameplay-shell-mobile .games-wallet-mini-btn {
+  min-height: 30px;
+  padding-inline: 10px;
+  font-size: 0.74rem;
+}
+
+.poker-gameplay-shell-mobile .games-wallet-info-row {
+  min-height: var(--poker-mobile-info-h);
+  padding: 0 12px;
+  font-size: 0.82rem;
+}
+
+.poker-gameplay-shell-mobile .games-wallet-timer {
+  font-size: 0.82rem;
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-card {
+  width: var(--poker-mobile-board-card-w);
+  border-radius: 10px;
+  --poker-card-rank-size: 0.68rem;
+  --poker-card-suit-size: 0.56rem;
+  --poker-card-center-inset-y: 13px;
+  --poker-card-center-inset-x: 8px;
+  --poker-card-pip-size: 0.82rem;
+  --poker-card-ace-size: 1.42rem;
+  --poker-card-face-rank-size: 1rem;
+  --poker-card-face-suit-size: 0.8rem;
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-board-row {
+  gap: 5px;
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-board-row .poker-gameplay-card.size-board {
+  width: 40px;
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-seat-avatar {
+  width: var(--poker-mobile-seat-avatar);
+  height: var(--poker-mobile-seat-avatar);
+  border-width: 1.5px;
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-seat.is-hero .poker-gameplay-seat-avatar {
+  width: var(--poker-mobile-seat-avatar-hero);
+  height: var(--poker-mobile-seat-avatar-hero);
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-seat-empty-copy {
+  font-size: 0.56rem;
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-seat-dealer {
+  width: 16px;
+  height: 16px;
+  top: -2px;
+  right: -5px;
+  font-size: 0.54rem;
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-seat-name,
+.poker-gameplay-shell-mobile .poker-gameplay-seat-stack,
+.poker-gameplay-shell-mobile .poker-gameplay-seat-bet {
+  max-width: 70px;
+  min-height: var(--poker-mobile-seat-pill-h);
+  padding: 2px 6px;
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-seat-name {
+  font-size: 0.62rem;
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-seat-stack,
+.poker-gameplay-shell-mobile .poker-gameplay-seat-bet {
+  gap: 4px;
+  font-size: 0.6rem;
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-seat-allin {
+  font-size: 0.5rem;
+}
+
+.poker-gameplay-shell-mobile.w360 .poker-gameplay-seat-name,
+.poker-gameplay-shell-mobile.w360 .poker-gameplay-seat-stack,
+.poker-gameplay-shell-mobile.w360 .poker-gameplay-seat-bet {
+  max-width: 64px;
+  padding-inline: 5px;
+}
+
+.poker-gameplay-shell-mobile.w360 {
+  --poker-mobile-stage-h: 304px;
+  --poker-mobile-table-h: clamp(144px, 44vw, 172px);
+  --poker-mobile-top-seat-edge: 10%;
+  --poker-mobile-top-seat-pill-max: 58px;
+  --poker-mobile-top-seat-bet-offset: -24px;
+}
+
+.poker-gameplay-shell-mobile.w360 .poker-gameplay-card {
+  width: 28px;
+  border-radius: 8px;
+  --poker-card-rank-size: 0.62rem;
+  --poker-card-suit-size: 0.5rem;
+  --poker-card-center-inset-y: 12px;
+  --poker-card-center-inset-x: 7px;
+  --poker-card-pip-size: 0.72rem;
+  --poker-card-ace-size: 1.2rem;
+  --poker-card-face-rank-size: 0.88rem;
+  --poker-card-face-suit-size: 0.7rem;
+}
+
+.poker-gameplay-shell-mobile.w360 .games-wallet-header {
+  padding-inline: 8px;
+}
+
+.poker-gameplay-shell-mobile.w360 .games-wallet-chat-trigger {
+  min-width: 44px;
+  font-size: 0.78rem;
+}
+
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-stage-mobile .poker-gameplay-seat-left,
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-stage-mobile .poker-gameplay-seat-right {
+  top: 45%;
+}
+
+.poker-gameplay-shell-mobile.w390 {
+  --poker-mobile-stage-h: 340px;
+  --poker-mobile-board-card-w: 33px;
+}
+
+.poker-gameplay-shell-mobile.w390 .games-wallet-header {
+  min-height: 58px;
+  padding: 6px 9px;
+}
+
+.poker-gameplay-shell-mobile.w390 .games-wallet-status-bar {
+  min-height: 40px;
+  padding-inline: 10px;
+}
+
+.poker-gameplay-shell-mobile.w390 .games-wallet-info-row {
+  min-height: 36px;
+  padding-inline: 10px;
+}
+
+.poker-gameplay-shell-mobile.w390 {
+  --poker-mobile-seat-box-w: 66px;
+  --poker-mobile-seat-box-h: 86px;
+  --poker-mobile-seat-avatar: 38px;
+  --poker-mobile-seat-avatar-hero: 42px;
+  --poker-mobile-board-card-w: 35px;
+  --poker-mobile-primary-btn-h: 32px;
+  --poker-mobile-secondary-btn-h: 28px;
+  --poker-mobile-input-h: 32px;
+  --poker-mobile-dock-pad: 6px;
+  --poker-mobile-top-seat-edge: 11%;
+  --poker-mobile-top-seat-pill-max: 58px;
+  --poker-mobile-top-seat-bet-offset: -22px;
+}
+
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-dock-mobile {
+  padding: 6px;
+}
+
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-dock-mobile .poker-gameplay-chip-button,
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-dock-mobile .poker-gameplay-action-button {
+  min-height: var(--poker-mobile-primary-btn-h);
+}
+
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-dock-mobile .poker-gameplay-pill-button {
+  min-height: var(--poker-mobile-secondary-btn-h);
+  font-size: 0.74rem;
+}
+
+.poker-gameplay-shell-mobile.w390 .games-wallet-header-left {
+  width: 50px;
+}
+
+.poker-gameplay-shell-mobile.w390 .games-wallet-header-center {
+  gap: 6px;
+}
+
+.poker-gameplay-shell-mobile.w390 .games-wallet-header-right {
+  gap: 5px;
+}
+
+.poker-gameplay-shell-mobile.w390 .games-wallet-header-logo {
+  width: 22px;
+  height: 22px;
+}
+
+.poker-gameplay-shell-mobile.w390 .games-wallet-table-name {
+  font-size: 0.84rem;
+}
+
+.poker-gameplay-shell-mobile.w390 .games-wallet-table-meta {
+  font-size: 0.62rem;
+}
+
+.poker-gameplay-shell-mobile.w390 .games-wallet-icon-btn {
+  min-height: 34px;
+  padding-inline: 8px;
+  font-size: 0.78rem;
+}
+
+.poker-gameplay-shell-mobile.w390 .games-wallet-chat-trigger {
+  min-width: 50px;
+}
+
+.poker-gameplay-shell-mobile.w390 .games-wallet-status-bar > p,
+.poker-gameplay-shell-mobile.w390 .games-wallet-info-row,
+.poker-gameplay-shell-mobile.w390 .games-wallet-timer {
+  font-size: 0.78rem;
+}
+
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-seat-top-left {
+  top: 12px;
+  left: var(--poker-mobile-top-seat-edge);
+}
+
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-seat-top-right {
+  top: 12px;
+  right: var(--poker-mobile-top-seat-edge);
+}
+
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-seat-bottom {
+  bottom: 4px;
+}
+
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-seat-name,
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-seat-stack,
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-seat-bet {
+  max-width: 64px;
+}
+
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-seat-left .poker-gameplay-seat-avatar,
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-seat-right .poker-gameplay-seat-avatar {
+  top: 14px;
+}
+
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-seat-left .poker-gameplay-seat-dealer,
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-seat-right .poker-gameplay-seat-dealer {
+  top: 16px;
+}
+
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-seat-left .poker-gameplay-seat-meta,
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-seat-right .poker-gameplay-seat-meta {
+  top: calc(14px + var(--poker-mobile-seat-avatar) + 4px);
+}
+
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-seat-left .poker-gameplay-seat-bet,
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-seat-right .poker-gameplay-seat-bet {
+  top: -12px;
+}
+
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-stage-mobile .poker-gameplay-pot-pill {
+  top: 56px;
+}
+
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-dock-mobile .poker-gameplay-dock-avatar {
+  width: 34px;
+  height: 34px;
+}
+
+.poker-gameplay-shell-mobile.w390 .poker-gameplay-dock-mobile .poker-gameplay-dock-value {
+  font-size: 0.9rem;
+}
+
+.poker-gameplay-shell-mobile.w430,
+.poker-gameplay-shell-mobile.wWide {
+  --poker-mobile-table-x-gutter: 40px;
+}
+
+.poker-gameplay-shell-mobile.h760 {
+  --poker-mobile-stage-h: 264px;
+  --poker-mobile-dock-pad: 3px;
+  --poker-mobile-primary-btn-h: 27px;
+  --poker-mobile-secondary-btn-h: 21px;
+  --poker-mobile-input-h: 24px;
+  --poker-mobile-gap: 2px;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-mobile-grid {
+  gap: var(--poker-mobile-gap);
+}
+
+.poker-gameplay-shell-mobile.h760 .games-wallet-header {
+  min-height: 54px;
+  padding-block: 5px;
+}
+
+.poker-gameplay-shell-mobile.h760 .games-wallet-status-bar,
+.poker-gameplay-shell-mobile.h760 .games-wallet-info-row {
+  min-height: 34px;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-dock-avatar {
+  width: 28px;
+  height: 28px;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-card.size-hero {
+  width: 28px;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-board-row .poker-gameplay-card.size-board {
+  width: 34px;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-dock-value {
+  font-size: 0.78rem;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .games-wallet-text-input {
+  font-size: 0.8rem;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-chip-button,
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-action-button {
+  border-radius: 10px;
+  font-size: 0.74rem;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-pill-button {
+  padding-inline: 5px;
+  font-size: 0.64rem;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-dock-secondary-row {
+  gap: 2px 3px;
+}
+
+.poker-gameplay-shell-mobile.h860 {
+  --poker-mobile-stage-h: 300px;
+  --poker-mobile-table-h: clamp(190px, 27dvh, 236px);
+  --poker-mobile-dock-pad: 4px;
+  --poker-mobile-primary-btn-h: 28px;
+  --poker-mobile-secondary-btn-h: 22px;
+  --poker-mobile-input-h: 26px;
+  --poker-mobile-gap: 3px;
+}
+
+.poker-gameplay-shell-mobile.h860.is-active-hand {
+  --poker-mobile-stage-h: 340px;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-mobile-grid {
+  gap: var(--poker-mobile-gap);
+}
+
+.poker-gameplay-shell-mobile.h860 .games-wallet-header {
+  min-height: 54px;
+  padding-block: 5px;
+}
+
+.poker-gameplay-shell-mobile.h860 .games-wallet-status-bar,
+.poker-gameplay-shell-mobile.h860 .games-wallet-info-row {
+  min-height: 34px;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-dock-avatar {
+  width: 30px;
+  height: 30px;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-card.size-hero {
+  width: 30px;
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up {
+  width: 38px;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up {
+  width: 34px;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up .poker-gameplay-card-rank {
+  font-size: 0.92rem;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up .poker-gameplay-card-suit {
+  font-size: 0.78rem;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up {
+  width: 36px;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up .poker-gameplay-card-rank {
+  font-size: 0.96rem;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up .poker-gameplay-card-suit {
+  font-size: 0.82rem;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-dock-value {
+  font-size: 0.82rem;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .games-wallet-text-input {
+  font-size: 0.84rem;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-chip-button,
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-action-button {
+  border-radius: 10px;
+  font-size: 0.78rem;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-pill-button {
+  padding-inline: 6px;
+  font-size: 0.68rem;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-dock-secondary-row {
+  gap: 3px 4px;
+}

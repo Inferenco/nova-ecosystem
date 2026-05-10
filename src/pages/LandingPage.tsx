@@ -26,7 +26,7 @@ const categories: Category[] = [
     title: "Games",
     description: "On-chain gaming experiences",
     to: "/games",
-    status: "coming-soon",
+    status: "live",
     accentColor: "nova-violet",
   },
   {
