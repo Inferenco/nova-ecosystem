@@ -4,6 +4,7 @@ import { LandingPage } from "@/pages/LandingPage";
 import { EventsPage } from "@/pages/EventsPage";
 import { MyEventsPage } from "@/pages/MyEventsPage";
 import { PrivacyPage } from "@/pages/PrivacyPage";
+import { TermsPage } from "@/pages/TermsPage";
 import { appEnv } from "@/config/env";
 import {
   CasinoPage,
@@ -41,6 +42,9 @@ export const router = createBrowserRouter(
         { path: "events", element: <EventsPage /> },
         { path: "my-events", element: <MyEventsPage /> },
         { path: "privacy", element: <PrivacyPage /> },
+        { path: "privacy.html", element: <PrivacyPage /> },
+        { path: "terms", element: <TermsPage /> },
+        { path: "terms.html", element: <TermsPage /> },
         { path: "*", element: <Navigate to="/" replace /> }
       ]
     }

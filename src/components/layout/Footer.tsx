@@ -12,6 +12,12 @@ export function Footer() {
           >
             Privacy
           </NavLink>
+          <NavLink
+            to="/terms"
+            className="transition-colors hover:text-text-secondary"
+          >
+            Terms
+          </NavLink>
         </div>
         <div className="flex items-center gap-nova-lg">
           <a
