@@ -4,7 +4,7 @@
   --poker-mobile-info-h: 38px;
   --poker-mobile-stage-h: 360px;
   --poker-mobile-table-aspect: 2.05 / 1;
-  --poker-mobile-table-h: clamp(156px, 44vw, 190px);
+  --poker-mobile-table-h: clamp(172px, 26dvh, 232px);
   --poker-mobile-table-x-gutter: 16px;
   --poker-mobile-table-center-y: 47%;
   --poker-mobile-seat-box-w: 72px;
@@ -37,17 +37,18 @@
 .poker-gameplay-mobile-grid {
   min-height: 100%;
   display: grid;
-  grid-template-rows: auto auto auto auto auto;
-  align-content: start;
+  grid-template-rows: auto auto minmax(var(--poker-mobile-stage-h), 1fr) auto auto;
+  align-content: stretch;
   gap: var(--poker-mobile-gap);
 }
 
 .poker-gameplay-mobile-stage-wrap {
   min-height: 0;
+  height: 100%;
 }
 
 .poker-gameplay-stage-mobile {
-  height: var(--poker-mobile-stage-h);
+  height: 100%;
 }
 
 .poker-gameplay-stage-mobile .poker-gameplay-seat {
@@ -697,8 +698,8 @@
 }
 
 .poker-gameplay-shell-mobile.h860 {
-  --poker-mobile-host-bottom-reserve: 76px;
-  --poker-mobile-stage-h: 276px;
+  --poker-mobile-stage-h: 300px;
+  --poker-mobile-table-h: clamp(190px, 27dvh, 236px);
   --poker-mobile-dock-pad: 4px;
   --poker-mobile-primary-btn-h: 28px;
   --poker-mobile-secondary-btn-h: 22px;
@@ -707,7 +708,7 @@
 }
 
 .poker-gameplay-shell-mobile.h860.is-active-hand {
-  --poker-mobile-stage-h: 316px;
+  --poker-mobile-stage-h: 340px;
 }
 
 .poker-gameplay-shell-mobile.h860 .poker-gameplay-mobile-grid {

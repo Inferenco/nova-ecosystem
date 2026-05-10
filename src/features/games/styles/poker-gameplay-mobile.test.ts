@@ -17,12 +17,12 @@ describe("poker mobile gameplay safe area styles", () => {
     expect(dockRule?.groups?.body).not.toContain("env(safe-area-inset-");
   });
 
-  it("uses content-sized mobile rows so extra viewport height does not stretch the table", () => {
+  it("assigns extra mobile viewport height to the gameplay stage", () => {
     const css = readFileSync(join(stylesDir, "poker-gameplay-mobile.css"), "utf8");
 
-    expect(css).toContain("grid-template-rows: auto auto auto auto auto;");
-    expect(css).toContain("align-content: start;");
-    expect(css).toContain("height: var(--poker-mobile-stage-h);");
+    expect(css).toContain("grid-template-rows: auto auto minmax(var(--poker-mobile-stage-h), 1fr) auto auto;");
+    expect(css).toContain("align-content: stretch;");
+    expect(css).toContain("height: 100%;");
   });
 
   it("keeps the mobile table oval on a fixed poker-table aspect instead of stretching with stage height", () => {
@@ -57,14 +57,14 @@ describe("poker mobile gameplay safe area styles", () => {
     expect(css).not.toContain(".poker-gameplay-dock-mobile .poker-gameplay-pill-button {\n  min-height: 27px;");
   });
 
-  it("reserves wallet-menu clearance for h860 embedded browser heights", () => {
+  it("does not reserve host browser bottom space inside h860 embedded browser heights", () => {
     const css = readFileSync(join(stylesDir, "poker-gameplay-mobile.css"), "utf8");
 
     expect(css).toContain("--poker-mobile-host-bottom-reserve: 0px;");
     expect(css).toContain("padding: 6px 6px calc(6px + var(--poker-mobile-host-bottom-reserve)) 6px;");
     expect(css).toContain(".poker-gameplay-shell-mobile.h860 {");
-    expect(css).toContain("--poker-mobile-host-bottom-reserve: 76px;");
-    expect(css).toContain("--poker-mobile-stage-h: 276px;");
+    expect(css).not.toContain("--poker-mobile-host-bottom-reserve: 76px;");
+    expect(css).toContain("--poker-mobile-stage-h: 300px;");
     expect(css).toContain("--poker-mobile-primary-btn-h: 28px;");
     expect(css).toContain("--poker-mobile-secondary-btn-h: 22px;");
   });
@@ -73,6 +73,6 @@ describe("poker mobile gameplay safe area styles", () => {
     const css = readFileSync(join(stylesDir, "poker-gameplay-mobile.css"), "utf8");
 
     expect(css).toContain(".poker-gameplay-shell-mobile.h860.is-active-hand {");
-    expect(css).toContain("--poker-mobile-stage-h: 316px;");
+    expect(css).toContain("--poker-mobile-stage-h: 340px;");
   });
 });
