@@ -57,6 +57,17 @@ describe("poker mobile gameplay safe area styles", () => {
     expect(css).not.toContain(".poker-gameplay-dock-mobile .poker-gameplay-pill-button {\n  min-height: 27px;");
   });
 
+  it("uses a simplified single-mark layout for mobile face-up hero cards", () => {
+    const css = readFileSync(join(stylesDir, "poker-gameplay-mobile.css"), "utf8");
+
+    expect(css).toContain(".poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up");
+    expect(css).toContain(".poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up .poker-gameplay-card-center");
+    expect(css).toContain(".poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up .poker-gameplay-card-corner-br");
+    expect(css).toContain("display: none;");
+    expect(css).toContain("font-size: 1rem;");
+    expect(css).toContain("font-size: 0.86rem;");
+  });
+
   it("does not reserve host browser bottom space inside h860 embedded browser heights", () => {
     const css = readFileSync(join(stylesDir, "poker-gameplay-mobile.css"), "utf8");
 

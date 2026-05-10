@@ -246,6 +246,33 @@
   border-radius: 8px;
 }
 
+.poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up {
+  width: 38px;
+  border-radius: 9px;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up .poker-gameplay-card-center,
+.poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up .poker-gameplay-card-corner-br {
+  display: none;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up .poker-gameplay-card-corner-tl {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up .poker-gameplay-card-rank {
+  font-size: 1rem;
+  line-height: 0.95;
+}
+
+.poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up .poker-gameplay-card-suit {
+  margin-top: 1px;
+  font-size: 0.86rem;
+  line-height: 1;
+}
+
 .poker-gameplay-dock-mobile .poker-gameplay-dock-raise-row {
   gap: 3px;
 }
@@ -732,6 +759,34 @@
 
 .poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-card.size-hero {
   width: 30px;
+}
+
+.poker-gameplay-shell-mobile .poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up {
+  width: 38px;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up {
+  width: 34px;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up .poker-gameplay-card-rank {
+  font-size: 0.92rem;
+}
+
+.poker-gameplay-shell-mobile.h760 .poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up .poker-gameplay-card-suit {
+  font-size: 0.78rem;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up {
+  width: 36px;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up .poker-gameplay-card-rank {
+  font-size: 0.96rem;
+}
+
+.poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-card.size-hero.face-up .poker-gameplay-card-suit {
+  font-size: 0.82rem;
 }
 
 .poker-gameplay-shell-mobile.h860 .poker-gameplay-dock-mobile .poker-gameplay-dock-value {
