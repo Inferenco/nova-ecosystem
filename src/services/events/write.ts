@@ -2,12 +2,6 @@ import { CHAIN_CONFIG } from "@/config/chain";
 import { appEnv } from "@/config/env";
 import { waitForTransaction } from "@/lib/cedraClient";
 import { toU64String } from "@/lib/format";
-import {
-  mockCancelLiveEvent,
-  mockCancelPendingEvent,
-  mockSubmitEditRequest,
-  mockSubmitEvent
-} from "./mockStore";
 import type {
   EditRequestPayload,
   SubmitEventInput,
@@ -73,14 +67,8 @@ export function buildEditRequestPayload(payload: EditRequestPayload) {
 
 export async function submitEvent(
   wallet: WalletTxSubmitter,
-  accountAddress: string,
   input: SubmitEventInput
 ): Promise<TxResult> {
-  if (appEnv.mockChain) {
-    const response = mockSubmitEvent(accountAddress, input);
-    return { hash: response.hash, explorerUrl: buildExplorerUrl(response.hash) };
-  }
-
   const response = await wallet.signAndSubmitTransaction({
     data: buildSubmitEventPayload(input)
   });
@@ -90,14 +78,8 @@ export async function submitEvent(
 
 export async function cancelPendingEvent(
   wallet: WalletTxSubmitter,
-  accountAddress: string,
   pendingId: string
 ): Promise<TxResult> {
-  if (appEnv.mockChain) {
-    const response = mockCancelPendingEvent(accountAddress, pendingId);
-    return { hash: response.hash, explorerUrl: buildExplorerUrl(response.hash) };
-  }
-
   const response = await wallet.signAndSubmitTransaction({
     data: buildCancelPendingPayload(pendingId)
   });
@@ -107,14 +89,8 @@ export async function cancelPendingEvent(
 
 export async function cancelLiveEvent(
   wallet: WalletTxSubmitter,
-  accountAddress: string,
   eventId: string
 ): Promise<TxResult> {
-  if (appEnv.mockChain) {
-    const response = mockCancelLiveEvent(accountAddress, eventId);
-    return { hash: response.hash, explorerUrl: buildExplorerUrl(response.hash) };
-  }
-
   const response = await wallet.signAndSubmitTransaction({
     data: buildCancelLivePayload(eventId)
   });
@@ -124,14 +100,8 @@ export async function cancelLiveEvent(
 
 export async function submitEditRequest(
   wallet: WalletTxSubmitter,
-  accountAddress: string,
   payload: EditRequestPayload
 ): Promise<TxResult> {
-  if (appEnv.mockChain) {
-    const response = mockSubmitEditRequest(accountAddress, payload);
-    return { hash: response.hash, explorerUrl: buildExplorerUrl(response.hash) };
-  }
-
   const response = await wallet.signAndSubmitTransaction({
     data: buildEditRequestPayload(payload)
   });

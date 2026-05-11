@@ -9,17 +9,9 @@ import {
 import type { EditRequestPayload, SubmitEventInput } from "@/services/events/types";
 import { eventsQueryKeys } from "./queryKeys";
 
-function requireAccountAddress(address: string | undefined): string {
-  if (!address) {
-    throw new Error("Connect your wallet before submitting a transaction.");
-  }
-  return address;
-}
-
 export function useEventMutations() {
   const wallet = useWallet();
   const queryClient = useQueryClient();
-  const address = wallet.account?.address?.toString();
 
   const invalidateEventQueries = async () => {
     await Promise.all([
@@ -33,7 +25,7 @@ export function useEventMutations() {
       if (wallet.networkMismatch) {
         throw new Error("Switch wallet network to Cedra Testnet.");
       }
-      return submitEvent(wallet, requireAccountAddress(address), input);
+      return submitEvent(wallet, input);
     },
     onSuccess: invalidateEventQueries
   });
@@ -43,7 +35,7 @@ export function useEventMutations() {
       if (wallet.networkMismatch) {
         throw new Error("Switch wallet network to Cedra Testnet.");
       }
-      return cancelPendingEvent(wallet, requireAccountAddress(address), pendingId);
+      return cancelPendingEvent(wallet, pendingId);
     },
     onSuccess: invalidateEventQueries
   });
@@ -53,7 +45,7 @@ export function useEventMutations() {
       if (wallet.networkMismatch) {
         throw new Error("Switch wallet network to Cedra Testnet.");
       }
-      return cancelLiveEvent(wallet, requireAccountAddress(address), eventId);
+      return cancelLiveEvent(wallet, eventId);
     },
     onSuccess: invalidateEventQueries
   });
@@ -63,7 +55,7 @@ export function useEventMutations() {
       if (wallet.networkMismatch) {
         throw new Error("Switch wallet network to Cedra Testnet.");
       }
-      return submitEditRequest(wallet, requireAccountAddress(address), payload);
+      return submitEditRequest(wallet, payload);
     },
     onSuccess: invalidateEventQueries
   });

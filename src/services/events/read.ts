@@ -1,13 +1,6 @@
 import { CHAIN_CONFIG } from "@/config/chain";
-import { appEnv } from "@/config/env";
 import { getCedraClient } from "@/lib/cedraClient";
 import { computeEventStatus, parseBoolean, parseInteger } from "@/lib/format";
-import {
-  mockGetEvents,
-  mockGetFeeConfig,
-  mockGetUserEvents,
-  mockGetUserPendingEvents
-} from "./mockStore";
 import type {
   EventRecord,
   EventsFeesConfig,
@@ -60,10 +53,6 @@ export async function fetchEventsPage({
   limit,
   offset
 }: PaginationParams): Promise<EventRecord[]> {
-  if (appEnv.mockChain) {
-    return mockGetEvents(limit, offset);
-  }
-
   const client = getCedraClient();
   const result = await client.view({
     payload: {
@@ -80,10 +69,6 @@ export async function fetchUserEvents(
   userAddress: string,
   { limit, offset }: PaginationParams
 ): Promise<EventRecord[]> {
-  if (appEnv.mockChain) {
-    return mockGetUserEvents(userAddress, limit, offset);
-  }
-
   const client = getCedraClient();
   const result = await client.view({
     payload: {
@@ -100,10 +85,6 @@ export async function fetchUserPendingEvents(
   userAddress: string,
   { limit, offset }: PaginationParams
 ): Promise<PendingEventRecord[]> {
-  if (appEnv.mockChain) {
-    return mockGetUserPendingEvents(userAddress, limit, offset);
-  }
-
   const client = getCedraClient();
   const result = await client.view({
     payload: {
@@ -117,10 +98,6 @@ export async function fetchUserPendingEvents(
 }
 
 export async function fetchEventFeeConfig(): Promise<EventsFeesConfig> {
-  if (appEnv.mockChain) {
-    return mockGetFeeConfig();
-  }
-
   const client = getCedraClient();
   const [minEscrowResult, approvalResult, rejectionResult] = await Promise.all([
     client.view({

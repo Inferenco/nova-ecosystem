@@ -17,8 +17,8 @@ export interface AppEnv {
   zedraInstallUrl: string;
   explorerTxBaseUrl: string;
   basePath: string;
-  mockChain: boolean;
-  mockWallet: boolean;
+  novaBridgeUrl: string;
+  novaRelayUrl: string;
 }
 
 const fromEnv = import.meta.env;
@@ -39,8 +39,8 @@ export const appEnv: AppEnv = {
   zedraInstallUrl: fromEnv.VITE_ZEDRA_INSTALL_URL || DEFAULT_ZEDRA_INSTALL_URL,
   explorerTxBaseUrl: fromEnv.VITE_CEDRA_EXPLORER_TX_BASE || DEFAULT_EXPLORER_BASE,
   basePath: fromEnv.VITE_BASE_PATH || "/",
-  mockChain: fromEnv.VITE_MOCK_CHAIN === "true",
-  mockWallet: fromEnv.VITE_MOCK_WALLET === "true" || fromEnv.VITE_MOCK_CHAIN === "true"
+  novaBridgeUrl: fromEnv.VITE_NOVA_BRIDGE_URL || "http://127.0.0.1:21984",
+  novaRelayUrl: fromEnv.VITE_NOVA_RELAY_URL || "https://nova-service-160604102004.europe-west1.run.app"
 };
 
 export function hasConfiguredWalletContract(): boolean {
