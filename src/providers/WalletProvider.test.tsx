@@ -77,7 +77,7 @@ vi.mock("@cedra-labs/wallet-adapter-core", () => {
     }
     async connect(walletName: string) {
       const response = await connectMock(walletName);
-      const targetWallet = this.wallets.find((w: any) => w.name === walletName);
+      const targetWallet = this.wallets.find((w: { name: string }) => w.name === walletName);
       this.wallet = targetWallet || novaConnectWallet;
       this.account = response.args;
       this.network = network;

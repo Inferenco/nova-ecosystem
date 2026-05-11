@@ -14,13 +14,12 @@ import {
   type AccountInfo,
   type NetworkInfo
 } from "@cedra-labs/wallet-adapter-core";
-import { Network } from "@cedra-labs/ts-sdk";
-import { getCedraWallets } from "@cedra-labs/wallet-standard";
 import {
   tryResumeNovaWalletConnection,
   NOVA_CONNECT_NAME,
 } from "@inferenco/nova-wallet-adapter";
 import { appEnv } from "@/config/env";
+import { CHAIN_CONFIG } from "@/config/chain";
 import { isExpectedNetwork } from "@/config/chain";
 
 interface WalletDescriptor {
@@ -91,24 +90,10 @@ function mapWallets(wallets: ReadonlyArray<{ name: string; icon?: string | null 
 
 function getWalletCore(): WalletCore {
   if (!walletCoreInstance) {
-    // Get all registered AIP-62 wallets (including Nova Connect from registration)
-    const { cedraWallets } = getCedraWallets();
-    
-    // Extract wallet names and prioritize Nova Connect as first
-    const walletNames = cedraWallets.map((w) => w.name);
-    const novaIndex = walletNames.indexOf(NOVA_CONNECT_NAME);
-    
-    let orderedWalletNames = [...walletNames];
-    if (novaIndex > 0) {
-      orderedWalletNames.splice(novaIndex, 1);
-      orderedWalletNames = [NOVA_CONNECT_NAME, ...orderedWalletNames];
-    } else if (novaIndex === -1) {
-      // Nova Connect not found, prepend it anyway (may be registered later)
-      orderedWalletNames = [NOVA_CONNECT_NAME, ...orderedWalletNames];
-    }
-
-    walletCoreInstance = new WalletCore(orderedWalletNames as any, {
-      network: Network.TESTNET,
+    // WalletCore picks up wallets from wallet-standard registry automatically
+    // Wallets are ordered via getCedraWallets() in the WalletProvider useEffect
+    walletCoreInstance = new WalletCore([], {
+      network: CHAIN_CONFIG.network,
     });
 
     // Resume any pending mobile connections from page reload
@@ -208,9 +193,17 @@ export function WalletProvider({ children }: PropsWithChildren) {
     };
 
     const updateWallets = () => {
+      // Get wallets from WalletCore and prioritize Nova Connect first
+      let wallets = [...walletCore.wallets];
+      const novaIndex = wallets.findIndex((w) => w.name === NOVA_CONNECT_NAME);
+      if (novaIndex > 0) {
+        const [nova] = wallets.splice(novaIndex, 1);
+        wallets = [nova, ...wallets];
+      }
+
       setSnapshot((prev) => ({
         ...prev,
-        wallets: mapWallets(walletCore.wallets)
+        wallets: mapWallets(wallets)
       }));
 
       if (cachedRestoreAttemptedRef.current) return;

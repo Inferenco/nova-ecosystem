@@ -4,8 +4,10 @@ const DEFAULT_ZEDRA_INSTALL_URL =
   "https://chromewebstore.google.com/detail/zedra-wallet/pbeefngmcchkcibdodceimammkigfanl";
 const DEFAULT_EXPLORER_BASE = "https://cedrascan.com/txn";
 
+export type CedraNetwork = "testnet" | "devnet" | "mainnet";
+
 export interface AppEnv {
-  cedraNetwork: "testnet";
+  cedraNetwork: CedraNetwork;
   fullnodeUrl: string;
   indexerUrl: string;
   walletContractAddress: string;
@@ -24,7 +26,7 @@ export interface AppEnv {
 const fromEnv = import.meta.env;
 
 export const appEnv: AppEnv = {
-  cedraNetwork: "testnet",
+  cedraNetwork: (fromEnv.VITE_CEDRA_NETWORK as CedraNetwork) || "testnet",
   fullnodeUrl: fromEnv.VITE_CEDRA_FULLNODE_URL || DEFAULT_FULLNODE,
   indexerUrl: fromEnv.VITE_CEDRA_INDEXER_URL || DEFAULT_INDEXER,
   walletContractAddress: fromEnv.VITE_WALLET_CONTRACT_ADDRESS || "0x0",
