@@ -68,6 +68,12 @@ test("network mismatch blocks write actions", async ({ page, isMobile }) => {
 });
 
 test("games routes and privacy pages render", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("link", { name: "Privacy Policy" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Privacy Policy for Nova Wallet" })
+  ).toBeVisible();
+
   await page.goto("/games");
   await expect(page.getByRole("heading", { name: "Nova Gaming" })).toBeVisible();
   await expect(page.getByRole("link", { name: /Nova Casino/i })).toBeVisible();
