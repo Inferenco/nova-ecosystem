@@ -155,6 +155,14 @@ export function LandingPage() {
             More features are on the way as the ecosystem grows.
           </li>
         </ul>
+        <div className="border-t border-surface-glass-border pt-nova-md">
+          <Link
+            to="/privacy"
+            className="text-caption font-medium text-nova-cyan transition-colors hover:text-text-primary hover:underline"
+          >
+            Privacy Policy
+          </Link>
+        </div>
       </GlassCard>
     </section>
   );
