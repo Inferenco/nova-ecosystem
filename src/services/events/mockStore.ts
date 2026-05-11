@@ -1,193 +1,131 @@
 import type {
   EditRequestPayload,
   EventRecord,
+  EventsFeesConfig,
   PendingEventRecord,
-  SubmitEventInput
+  SubmitEventInput,
+  TxResult
 } from "./types";
-import { computeEventStatus } from "@/lib/format";
 
-const now = Math.floor(Date.now() / 1000);
+// Mock mock wallet address
+const MOCK_WALLET_ADDRESS = `0x${"67e3f94a".repeat(8)}`;
 
-let nextEventId = 100;
-let nextPendingId = 200;
-
-let events: EventRecord[] = [
+// Mock event data
+const mockEvents: EventRecord[] = [
   {
     id: "1",
-    submitter: "0x111",
-    title: "Nova Community AMA",
-    description: "Monthly community AMA covering wallet updates and ecosystem roadmap.",
-    category: "Community",
+    submitter: MOCK_WALLET_ADDRESS,
+    title: "Test Event 1",
+    description: "This is a test event",
+    category: "General",
     imageUrl: "",
-    eventUrl: "https://x.com/movenovawallet",
-    startTimestamp: now + 7200,
-    endTimestamp: now + 10800,
+    eventUrl: "",
+    startTimestamp: 1700000000,
+    endTimestamp: 1700003600,
     isTba: false,
     status: "Upcoming"
   },
   {
     id: "2",
-    submitter: "0x222",
-    title: "Move Builders Workshop",
-    description: "Hands-on workshop for Move smart contract beginners.",
-    category: "Workshop",
+    submitter: MOCK_WALLET_ADDRESS,
+    title: "Test Event 2",
+    description: "This is another test event",
+    category: "General",
     imageUrl: "",
     eventUrl: "",
-    startTimestamp: now - 3600,
-    endTimestamp: now + 1800,
+    startTimestamp: 1700010000,
+    endTimestamp: 1700013600,
     isTba: false,
-    status: "Live"
+    status: "Upcoming"
   }
 ];
 
-let pendingEvents: PendingEventRecord[] = [
+// Mock pending events - will be populated by submitEvent
+const mockPendingEvents: PendingEventRecord[] = [
   {
-    pendingId: "7",
-    submitter: "0xabc",
-    title: "Cedra Testnet Meetup",
-    description: "Local meetup for Cedra builders and users.",
-    category: "Meetup",
+    pendingId: "1",
+    submitter: MOCK_WALLET_ADDRESS,
+    title: "Pending Event 1",
+    description: "This is a pending test event",
+    category: "General",
     imageUrl: "",
     eventUrl: "",
-    startTimestamp: now + 172800,
-    endTimestamp: now + 176400,
+    startTimestamp: 1700020000,
+    endTimestamp: 1700023600,
     isTba: false,
     escrowAmount: BigInt(100000000),
-    submittedAt: now - 1200
+    submittedAt: 1700000000
   }
 ];
 
-const DEFAULT_ESCROW = BigInt(100000000);
-
-function recalculateStatuses(): void {
-  const nowValue = Math.floor(Date.now() / 1000);
-  events = events.map((event) => ({
-    ...event,
-    status: computeEventStatus(
-      event.startTimestamp,
-      event.endTimestamp,
-      event.isTba,
-      nowValue
-    )
-  }));
-}
+// State for dynamically added events
+const dynamicPendingEvents: PendingEventRecord[] = [];
 
 export function mockGetEvents(limit: number, offset: number): EventRecord[] {
-  recalculateStatuses();
-  return events.slice(offset, offset + limit);
+  return mockEvents.slice(offset, offset + limit);
 }
 
-export function mockGetUserEvents(
-  userAddress: string,
-  limit: number,
-  offset: number
-): EventRecord[] {
-  recalculateStatuses();
-  const byUser = events.filter(
-    (event) => event.submitter.toLowerCase() === userAddress.toLowerCase()
-  );
-  return byUser.slice(offset, offset + limit);
+export function mockGetUserEvents(userAddress: string, limit: number, offset: number): EventRecord[] {
+  return mockEvents.filter((e) => e.submitter === userAddress).slice(offset, offset + limit);
 }
 
-export function mockGetUserPendingEvents(
-  userAddress: string,
-  limit: number,
-  offset: number
-): PendingEventRecord[] {
-  const byUser = pendingEvents.filter(
-    (event) => event.submitter.toLowerCase() === userAddress.toLowerCase()
-  );
-  return byUser.slice(offset, offset + limit);
+export function mockGetUserPendingEvents(userAddress: string, limit: number, offset: number): PendingEventRecord[] {
+  const allPending = [...mockPendingEvents, ...dynamicPendingEvents];
+  return allPending.filter((e) => e.submitter === userAddress).slice(offset, offset + limit);
 }
 
-export function mockGetFeeConfig() {
+export function mockGetFeeConfig(): EventsFeesConfig {
   return {
-    minEscrowFee: DEFAULT_ESCROW,
+    minEscrowFee: BigInt(100000000),
     approvalFeePercent: 10,
-    rejectionFeePercent: 1
+    rejectionFeePercent: 5
   };
 }
 
 export function mockSubmitEvent(
-  submitter: string,
+   
+  _accountAddress: string,
   input: SubmitEventInput
-): { hash: string } {
-  const pendingId = (nextPendingId++).toString();
-  pendingEvents = [
-    {
-      pendingId,
-      submitter,
-      title: input.title,
-      description: input.description,
-      category: input.category,
-      imageUrl: input.imageUrl,
-      eventUrl: input.eventUrl,
-      startTimestamp: input.startTimestamp,
-      endTimestamp: input.endTimestamp,
-      isTba: input.isTba,
-      escrowAmount: input.escrowAmount,
-      submittedAt: Math.floor(Date.now() / 1000)
-    },
-    ...pendingEvents
-  ];
-  return { hash: `0xmocksubmit${pendingId}` };
+): TxResult {
+  // Add submitted event to dynamic pending events list
+  const newEvent: PendingEventRecord = {
+    pendingId: String(dynamicPendingEvents.length + mockPendingEvents.length + 1),
+    submitter: MOCK_WALLET_ADDRESS,
+    title: input.title,
+    description: input.description,
+    category: input.category,
+    imageUrl: input.imageUrl || "",
+    eventUrl: input.eventUrl || "",
+    startTimestamp: input.isTba ? 0 : input.startTimestamp,
+    endTimestamp: input.isTba ? 0 : input.endTimestamp,
+    isTba: input.isTba,
+    escrowAmount: input.escrowAmount,
+    submittedAt: Math.floor(Date.now() / 1000)
+  };
+  dynamicPendingEvents.push(newEvent);
+  return { hash: `0xmocktx_${Date.now()}`, explorerUrl: "https://cedrascan.com/txn/0xmocktx" };
 }
 
 export function mockCancelPendingEvent(
-  submitter: string,
+   
+  _accountAddress: string,
   pendingId: string
-): { hash: string } {
-  const candidate = pendingEvents.find((event) => event.pendingId === pendingId);
-  if (!candidate) throw new Error("E_PENDING_EVENT_NOT_FOUND");
-  if (candidate.submitter.toLowerCase() !== submitter.toLowerCase()) {
-    throw new Error("E_NOT_SUBMITTER");
-  }
-  pendingEvents = pendingEvents.filter((event) => event.pendingId !== pendingId);
-  return { hash: `0xmockcancelpending${pendingId}` };
+): TxResult {
+  return { hash: `0xmockcancel_${pendingId}`, explorerUrl: "https://cedrascan.com/txn/0xmockcancel" };
 }
 
 export function mockCancelLiveEvent(
-  submitter: string,
+   
+  _accountAddress: string,
   eventId: string
-): { hash: string } {
-  const candidate = events.find((event) => event.id === eventId);
-  if (!candidate) throw new Error("E_EVENT_NOT_FOUND");
-  if (candidate.submitter.toLowerCase() !== submitter.toLowerCase()) {
-    throw new Error("E_NOT_SUBMITTER");
-  }
-  events = events.filter((event) => event.id !== eventId);
-  return { hash: `0xmockcancellive${eventId}` };
+): TxResult {
+  return { hash: `0xmockcancellive_${eventId}`, explorerUrl: "https://cedrascan.com/txn/0xmockcancellive" };
 }
 
 export function mockSubmitEditRequest(
-  submitter: string,
+   
+  _accountAddress: string,
   payload: EditRequestPayload
-): { hash: string } {
-  const candidate = events.find((event) => event.id === payload.eventId);
-  if (!candidate) throw new Error("E_EVENT_NOT_FOUND");
-  if (candidate.submitter.toLowerCase() !== submitter.toLowerCase()) {
-    throw new Error("E_NOT_SUBMITTER");
-  }
-
-  events = events.map((event) => {
-    if (event.id !== payload.eventId) return event;
-    return {
-      ...event,
-      title: payload.newTitle,
-      description: payload.newDescription,
-      category: payload.newCategory,
-      imageUrl: payload.newImageUrl,
-      eventUrl: payload.newEventUrl,
-      startTimestamp: payload.newStartTimestamp,
-      endTimestamp: payload.newEndTimestamp,
-      isTba: payload.newIsTba,
-      status: computeEventStatus(
-        payload.newStartTimestamp,
-        payload.newEndTimestamp,
-        payload.newIsTba
-      )
-    };
-  });
-
-  return { hash: `0xmockedit${nextEventId++}` };
+): TxResult {
+  return { hash: `0xmockedit_${payload.eventId}`, explorerUrl: "https://cedrascan.com/txn/0xmockedit" };
 }

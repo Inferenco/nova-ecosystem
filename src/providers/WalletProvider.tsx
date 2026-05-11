@@ -14,8 +14,12 @@ import {
   type AccountInfo,
   type NetworkInfo
 } from "@cedra-labs/wallet-adapter-core";
-import { Network } from "@cedra-labs/ts-sdk";
+import {
+  tryResumeNovaWalletConnection,
+  NOVA_CONNECT_NAME,
+} from "@inferenco/nova-wallet-adapter";
 import { appEnv } from "@/config/env";
+import { CHAIN_CONFIG } from "@/config/chain";
 import { isExpectedNetwork } from "@/config/chain";
 
 interface WalletDescriptor {
@@ -88,9 +92,14 @@ function mapWallets(wallets: ReadonlyArray<{ name: string; icon?: string | null 
 
 function getWalletCore(): WalletCore {
   if (!walletCoreInstance) {
+    // WalletCore picks up wallets from wallet-standard registry automatically
+    // Wallets are ordered via getCedraWallets() in the WalletProvider useEffect
     walletCoreInstance = new WalletCore([], {
-      network: Network.TESTNET
+      network: CHAIN_CONFIG.network,
     });
+
+    // Resume any pending mobile connections from page reload
+    void tryResumeNovaWalletConnection(walletCoreInstance);
   }
 
   return walletCoreInstance;
@@ -151,7 +160,7 @@ function buildMockAccount(): AccountInfo {
 function buildMockNetwork(): NetworkInfo {
   return {
     name:
-      window.localStorage.getItem("nova_mock_network_mismatch") === "1" ? "devnet" : "testnet"
+      typeof window !== "undefined" && window.localStorage.getItem("nova_mock_network_mismatch") === "1" ? "devnet" : appEnv.cedraNetwork
   } as NetworkInfo;
 }
 
@@ -202,14 +211,14 @@ function useMockWallet() {
   }, []);
 
   const signAndSubmitTransaction = useCallback(
-    async (payload: {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async (_payload: {
       data: {
         function: `${string}::${string}::${string}`;
         typeArguments?: string[];
         functionArguments: unknown[];
       };
     }) => {
-      void payload;
       return { hash: `0xmocktx${Date.now()}` };
     },
     []
@@ -267,9 +276,17 @@ export function WalletProvider({ children }: PropsWithChildren) {
     };
 
     const updateWallets = () => {
+      // Get wallets from WalletCore and prioritize Nova Connect first
+      let wallets = [...walletCore.wallets];
+      const novaIndex = wallets.findIndex((w) => w.name === NOVA_CONNECT_NAME);
+      if (novaIndex > 0) {
+        const [nova] = wallets.splice(novaIndex, 1);
+        wallets = [nova, ...wallets];
+      }
+
       setSnapshot((prev) => ({
         ...prev,
-        wallets: mapWallets(walletCore.wallets)
+        wallets: mapWallets(wallets)
       }));
 
       if (cachedRestoreAttemptedRef.current) return;
@@ -389,8 +406,7 @@ export function WalletProvider({ children }: PropsWithChildren) {
   );
 
   const activeSnapshot = appEnv.mockWallet ? mockWalletState : snapshot;
-  const networkMismatch =
-    activeSnapshot.connected && !isExpectedNetwork(activeSnapshot.network);
+  const networkMismatch = activeSnapshot.connected && !isExpectedNetwork(activeSnapshot.network);
 
   const value = useMemo<WalletContextState>(
     () => ({

@@ -1,12 +1,14 @@
 import { Network } from "@cedra-labs/ts-sdk";
 import type { NetworkInfo } from "@cedra-labs/wallet-adapter-core";
-import { appEnv } from "./env";
+import { appEnv, type CedraNetwork } from "./env";
+
+export { type CedraNetwork };
 
 export interface ChainConfig {
   id: "cedra";
   label: string;
   network: Network;
-  networkName: string;
+  networkName: CedraNetwork;
   rpcUrl: string;
   indexerUrl: string;
   walletContractAddress: string;
@@ -17,11 +19,25 @@ export interface ChainConfig {
   tokenDecimals: number;
 }
 
+// Map CedraNetwork string to Network enum
+function mapNetwork(network: CedraNetwork): Network {
+  switch (network) {
+    case "testnet":
+      return Network.TESTNET;
+    case "devnet":
+      return Network.DEVNET;
+    case "mainnet":
+      return Network.MAINNET;
+    default:
+      return Network.TESTNET;
+  }
+}
+
 export const CHAIN_CONFIG: ChainConfig = {
   id: "cedra",
-  label: "Cedra Testnet",
-  network: Network.TESTNET,
-  networkName: "testnet",
+  label: `Cedra ${appEnv.cedraNetwork.charAt(0).toUpperCase() + appEnv.cedraNetwork.slice(1)}`,
+  network: mapNetwork(appEnv.cedraNetwork),
+  networkName: appEnv.cedraNetwork,
   rpcUrl: appEnv.fullnodeUrl,
   indexerUrl: appEnv.indexerUrl,
   walletContractAddress: appEnv.walletContractAddress,

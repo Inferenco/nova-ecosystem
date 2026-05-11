@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { UserResponseStatus } from "@cedra-labs/wallet-standard";
+import { NOVA_CONNECT_NAME } from "@inferenco/nova-wallet-adapter";
 import { WalletProvider, useWallet } from "./WalletProvider";
 
 const connectMock = vi.fn();
@@ -18,7 +19,26 @@ const network = {
   url: "https://testnet.cedra.dev/v1"
 };
 
-const wallet = {
+const novaConnectWallet = {
+  name: NOVA_CONNECT_NAME,
+  icon: "data:image/svg+xml;base64,...",
+  features: {
+    "cedra:connect": {
+      connect: connectMock
+    },
+    "cedra:account": {
+      account: accountMock
+    },
+    "cedra:network": {
+      network: networkMock
+    },
+    "cedra:disconnect": {
+      disconnect: disconnectMock
+    }
+  }
+};
+
+const zedraWallet = {
   name: "Zedra",
   icon: null,
   features: {
@@ -39,7 +59,7 @@ const wallet = {
 
 vi.mock("@cedra-labs/wallet-adapter-core", () => {
   class WalletCore {
-    wallets = [wallet];
+    wallets = [novaConnectWallet, zedraWallet];
     wallet: unknown = null;
     account: unknown = null;
     network: unknown = null;
@@ -57,7 +77,8 @@ vi.mock("@cedra-labs/wallet-adapter-core", () => {
     }
     async connect(walletName: string) {
       const response = await connectMock(walletName);
-      this.wallet = wallet;
+      const targetWallet = this.wallets.find((w: { name: string }) => w.name === walletName);
+      this.wallet = targetWallet || novaConnectWallet;
       this.account = response.args;
       this.network = network;
       return undefined;
@@ -72,6 +93,19 @@ vi.mock("@cedra-labs/wallet-adapter-core", () => {
 
   return { WalletCore };
 });
+
+vi.mock("@cedra-labs/wallet-standard", () => ({
+  getCedraWallets: () => ({ cedraWallets: [novaConnectWallet, zedraWallet] }),
+  UserResponseStatus: {
+    APPROVED: "approved",
+    REJECTED: "rejected",
+  },
+}));
+
+vi.mock("@inferenco/nova-wallet-adapter", () => ({
+  tryResumeNovaWalletConnection: vi.fn().mockResolvedValue(undefined),
+  NOVA_CONNECT_NAME: "Nova Connect",
+}));
 
 function WalletStateProbe() {
   const walletState = useWallet();
@@ -88,8 +122,11 @@ function WalletStateProbe() {
         {walletState.connecting ? "connecting" : "idle"}
       </span>
       <span data-testid="wallet-count">{walletState.wallets.length}</span>
-      <button type="button" onClick={() => void walletState.connect("Zedra")}>
-        Connect Zedra
+      <span data-testid="first-wallet-name">
+        {walletState.wallets[0]?.name ?? "none"}
+      </span>
+      <button type="button" onClick={() => void walletState.connect(NOVA_CONNECT_NAME)}>
+        Connect Nova Connect
       </button>
       <button type="button" onClick={() => void walletState.disconnect()}>
         Disconnect
@@ -115,7 +152,7 @@ describe("WalletProvider", () => {
     window.localStorage.setItem(
       "nova_wallet_session",
       JSON.stringify({
-        walletName: "Zedra",
+        walletName: NOVA_CONNECT_NAME,
         address: "0xabc123",
         network
       })
@@ -127,7 +164,7 @@ describe("WalletProvider", () => {
       </WalletProvider>
     );
 
-    expect(screen.getByTestId("wallet-count")).toHaveTextContent("1");
+    expect(screen.getByTestId("wallet-count")).toHaveTextContent("2");
 
     await waitFor(() => {
       expect(screen.getByTestId("status")).toHaveTextContent(/^connected$/);
@@ -139,7 +176,7 @@ describe("WalletProvider", () => {
   });
 
   it("does not call the wallet extension on refresh without a cached session", async () => {
-    window.localStorage.setItem("CedraWalletName", "Zedra");
+    window.localStorage.setItem("CedraWalletName", NOVA_CONNECT_NAME);
 
     render(
       <WalletProvider>
@@ -154,7 +191,7 @@ describe("WalletProvider", () => {
   });
 
   it("caches the wallet session after an explicit connect", async () => {
-    window.localStorage.setItem("CedraWalletName", "Zedra");
+    window.localStorage.setItem("CedraWalletName", NOVA_CONNECT_NAME);
     const user = userEvent.setup();
 
     render(
@@ -163,13 +200,13 @@ describe("WalletProvider", () => {
       </WalletProvider>
     );
 
-    await user.click(screen.getByRole("button", { name: "Connect Zedra" }));
+    await user.click(screen.getByRole("button", { name: "Connect Nova Connect" }));
 
     await waitFor(() => {
       expect(screen.getByTestId("status")).toHaveTextContent(/^connected$/);
     });
 
-    expect(connectMock).toHaveBeenCalledWith("Zedra");
+    expect(connectMock).toHaveBeenCalledWith(NOVA_CONNECT_NAME);
     expect(window.localStorage.getItem("nova_wallet_session")).toContain("0xabc123");
   });
 
@@ -177,7 +214,7 @@ describe("WalletProvider", () => {
     window.localStorage.setItem(
       "nova_wallet_session",
       JSON.stringify({
-        walletName: "Zedra",
+        walletName: NOVA_CONNECT_NAME,
         address: "0xabc123",
         network
       })
@@ -199,5 +236,16 @@ describe("WalletProvider", () => {
       expect(screen.getByTestId("status")).toHaveTextContent(/^disconnected$/);
     });
     expect(window.localStorage.getItem("nova_wallet_session")).toBeNull();
+  });
+
+  it("should have Nova Connect as the first wallet", () => {
+    render(
+      <WalletProvider>
+        <WalletStateProbe />
+      </WalletProvider>
+    );
+
+    expect(screen.getByTestId("first-wallet-name")).toHaveTextContent(NOVA_CONNECT_NAME);
+    expect(screen.getByTestId("wallet-count")).toHaveTextContent("2");
   });
 });

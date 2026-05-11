@@ -4,8 +4,10 @@ const DEFAULT_ZEDRA_INSTALL_URL =
   "https://chromewebstore.google.com/detail/zedra-wallet/pbeefngmcchkcibdodceimammkigfanl";
 const DEFAULT_EXPLORER_BASE = "https://cedrascan.com/txn";
 
+export type CedraNetwork = "testnet" | "devnet" | "mainnet";
+
 export interface AppEnv {
-  cedraNetwork: "testnet";
+  cedraNetwork: CedraNetwork;
   fullnodeUrl: string;
   indexerUrl: string;
   walletContractAddress: string;
@@ -19,12 +21,14 @@ export interface AppEnv {
   basePath: string;
   mockChain: boolean;
   mockWallet: boolean;
+  novaBridgeUrl: string;
+  novaRelayUrl: string;
 }
 
 const fromEnv = import.meta.env;
 
 export const appEnv: AppEnv = {
-  cedraNetwork: "testnet",
+  cedraNetwork: (fromEnv.VITE_CEDRA_NETWORK as CedraNetwork) || "testnet",
   fullnodeUrl: fromEnv.VITE_CEDRA_FULLNODE_URL || DEFAULT_FULLNODE,
   indexerUrl: fromEnv.VITE_CEDRA_INDEXER_URL || DEFAULT_INDEXER,
   walletContractAddress: fromEnv.VITE_WALLET_CONTRACT_ADDRESS || "0x0",
@@ -40,7 +44,9 @@ export const appEnv: AppEnv = {
   explorerTxBaseUrl: fromEnv.VITE_CEDRA_EXPLORER_TX_BASE || DEFAULT_EXPLORER_BASE,
   basePath: fromEnv.VITE_BASE_PATH || "/",
   mockChain: fromEnv.VITE_MOCK_CHAIN === "true",
-  mockWallet: fromEnv.VITE_MOCK_WALLET === "true" || fromEnv.VITE_MOCK_CHAIN === "true"
+  mockWallet: fromEnv.VITE_MOCK_WALLET === "true" || fromEnv.VITE_MOCK_CHAIN === "true",
+  novaBridgeUrl: fromEnv.VITE_NOVA_BRIDGE_URL || "http://127.0.0.1:21984",
+  novaRelayUrl: fromEnv.VITE_NOVA_RELAY_URL || "https://nova-service-160604102004.europe-west1.run.app"
 };
 
 export function hasConfiguredWalletContract(): boolean {

@@ -9,17 +9,17 @@ import {
 import type { EditRequestPayload, SubmitEventInput } from "@/services/events/types";
 import { eventsQueryKeys } from "./queryKeys";
 
-function requireAccountAddress(address: string | undefined): string {
-  if (!address) {
-    throw new Error("Connect your wallet before submitting a transaction.");
-  }
-  return address;
-}
-
 export function useEventMutations() {
   const wallet = useWallet();
   const queryClient = useQueryClient();
   const address = wallet.account?.address?.toString();
+
+  function requireAccountAddress(): string {
+    if (!address) {
+      throw new Error("Connect your wallet before submitting a transaction.");
+    }
+    return address;
+  }
 
   const invalidateEventQueries = async () => {
     await Promise.all([
@@ -33,7 +33,7 @@ export function useEventMutations() {
       if (wallet.networkMismatch) {
         throw new Error("Switch wallet network to Cedra Testnet.");
       }
-      return submitEvent(wallet, requireAccountAddress(address), input);
+      return submitEvent(wallet, requireAccountAddress(), input);
     },
     onSuccess: invalidateEventQueries
   });
@@ -43,7 +43,7 @@ export function useEventMutations() {
       if (wallet.networkMismatch) {
         throw new Error("Switch wallet network to Cedra Testnet.");
       }
-      return cancelPendingEvent(wallet, requireAccountAddress(address), pendingId);
+      return cancelPendingEvent(wallet, requireAccountAddress(), pendingId);
     },
     onSuccess: invalidateEventQueries
   });
@@ -53,7 +53,7 @@ export function useEventMutations() {
       if (wallet.networkMismatch) {
         throw new Error("Switch wallet network to Cedra Testnet.");
       }
-      return cancelLiveEvent(wallet, requireAccountAddress(address), eventId);
+      return cancelLiveEvent(wallet, requireAccountAddress(), eventId);
     },
     onSuccess: invalidateEventQueries
   });
@@ -63,7 +63,7 @@ export function useEventMutations() {
       if (wallet.networkMismatch) {
         throw new Error("Switch wallet network to Cedra Testnet.");
       }
-      return submitEditRequest(wallet, requireAccountAddress(address), payload);
+      return submitEditRequest(wallet, requireAccountAddress(), payload);
     },
     onSuccess: invalidateEventQueries
   });
