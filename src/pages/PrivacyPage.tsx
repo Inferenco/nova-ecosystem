@@ -65,10 +65,10 @@ export function PrivacyPage() {
         If you have any questions about this Privacy Policy, please contact us
         at
         <a
-          href="mailto:singularityshiftai@gmail.com"
+          href="mailto:singularityshift@inferenco.com"
           className="ml-1 text-nova-cyan hover:underline"
         >
-          singularityshiftai@gmail.com
+          singularityshift@inferenco.com
         </a>
         .
       </p>
