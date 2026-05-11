@@ -59,6 +59,8 @@ interface WalletSnapshot {
 const WalletContext = createContext<WalletContextState | null>(null);
 const WALLET_STORAGE_KEY = "CedraWalletName";
 const WALLET_SESSION_STORAGE_KEY = "nova_wallet_session";
+const MOCK_WALLET_STORAGE_KEY = "nova_mock_wallet_name";
+const MOCK_WALLET_ADDRESS = `0x${"67e3f94a".repeat(8)}`;
 
 const initialSnapshot: WalletSnapshot = {
   connected: false,
@@ -151,11 +153,92 @@ function buildCachedAccount(address: string): AccountInfo {
   return { address: { toString: () => address } } as unknown as AccountInfo;
 }
 
+function buildMockAccount(): AccountInfo {
+  return { address: { toString: () => MOCK_WALLET_ADDRESS } } as unknown as AccountInfo;
+}
+
+function buildMockNetwork(): NetworkInfo {
+  return {
+    name:
+      typeof window !== "undefined" && window.localStorage.getItem("nova_mock_network_mismatch") === "1" ? "devnet" : appEnv.cedraNetwork
+  } as NetworkInfo;
+}
+
+function useMockWallet() {
+  const [state, setState] = useState<WalletSnapshot>(() => ({
+    ...initialSnapshot,
+    wallets: [{ name: "Mock Zedra" }, { name: "Mock Nightly" }],
+    connected: typeof window !== "undefined" && Boolean(window.localStorage.getItem(MOCK_WALLET_STORAGE_KEY)),
+    wallet:
+      typeof window !== "undefined" && window.localStorage.getItem(MOCK_WALLET_STORAGE_KEY)
+        ? { name: window.localStorage.getItem(MOCK_WALLET_STORAGE_KEY) as string }
+        : null,
+    account:
+      typeof window !== "undefined" && window.localStorage.getItem(MOCK_WALLET_STORAGE_KEY)
+        ? buildMockAccount()
+        : null,
+    network:
+      typeof window !== "undefined" && window.localStorage.getItem(MOCK_WALLET_STORAGE_KEY)
+        ? buildMockNetwork()
+        : null
+  }));
+
+  const connect = useCallback(async (walletName: string) => {
+    setState((prev) => ({ ...prev, connecting: true }));
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    window.localStorage.setItem(MOCK_WALLET_STORAGE_KEY, walletName);
+
+    setState((prev) => ({
+      ...prev,
+      connecting: false,
+      connected: true,
+      wallet: { name: walletName },
+      account: buildMockAccount(),
+      network: buildMockNetwork()
+    }));
+  }, []);
+
+  const disconnect = useCallback(async () => {
+    window.localStorage.removeItem(MOCK_WALLET_STORAGE_KEY);
+    setState((prev) => ({
+      ...prev,
+      connected: false,
+      connecting: false,
+      account: null,
+      network: null,
+      wallet: null
+    }));
+  }, []);
+
+  const signAndSubmitTransaction = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async (_payload: {
+      data: {
+        function: `${string}::${string}::${string}`;
+        typeArguments?: string[];
+        functionArguments: unknown[];
+      };
+    }) => {
+      return { hash: `0xmocktx${Date.now()}` };
+    },
+    []
+  );
+
+  return {
+    ...state,
+    connect,
+    disconnect,
+    signAndSubmitTransaction
+  };
+}
+
 export function WalletProvider({ children }: PropsWithChildren) {
+  const mockWalletState = useMockWallet();
   const [snapshot, setSnapshot] = useState<WalletSnapshot>(initialSnapshot);
   const cachedRestoreAttemptedRef = useRef(false);
 
   useEffect(() => {
+    if (appEnv.mockWallet) return;
 
     const walletCore = getWalletCore();
 
@@ -245,6 +328,11 @@ export function WalletProvider({ children }: PropsWithChildren) {
   }, []);
 
   const connect = useCallback(async (walletName: string) => {
+    if (appEnv.mockWallet) {
+      await mockWalletState.connect(walletName);
+      return;
+    }
+
     const walletCore = getWalletCore();
     setSnapshot((prev) => ({ ...prev, connecting: true }));
     try {
@@ -263,9 +351,14 @@ export function WalletProvider({ children }: PropsWithChildren) {
       setSnapshot((prev) => ({ ...prev, connecting: false }));
       throw error;
     }
-  }, []);
+  }, [mockWalletState]);
 
   const disconnect = useCallback(async () => {
+    if (appEnv.mockWallet) {
+      await mockWalletState.disconnect();
+      return;
+    }
+
     const walletCore = getWalletCore();
     if (walletCore.wallet) {
       await walletCore.disconnect();
@@ -279,7 +372,7 @@ export function WalletProvider({ children }: PropsWithChildren) {
       network: null,
       wallet: null
     }));
-  }, []);
+  }, [mockWalletState]);
 
   const signAndSubmitTransaction = useCallback(
     async (payload: {
@@ -289,6 +382,10 @@ export function WalletProvider({ children }: PropsWithChildren) {
         functionArguments: unknown[];
       };
     }) => {
+      if (appEnv.mockWallet) {
+        return mockWalletState.signAndSubmitTransaction(payload);
+      }
+
       const walletCore = getWalletCore();
       if (!walletCore.account) {
         const savedWalletName = getSavedWalletName();
@@ -305,21 +402,22 @@ export function WalletProvider({ children }: PropsWithChildren) {
 
       return { hash: response.hash };
     },
-    []
+    [mockWalletState]
   );
 
-  const networkMismatch = snapshot.connected && !isExpectedNetwork(snapshot.network);
+  const activeSnapshot = appEnv.mockWallet ? mockWalletState : snapshot;
+  const networkMismatch = activeSnapshot.connected && !isExpectedNetwork(activeSnapshot.network);
 
   const value = useMemo<WalletContextState>(
     () => ({
-      ...snapshot,
+      ...activeSnapshot,
       connect,
       disconnect,
       signAndSubmitTransaction,
       walletInstallUrl: appEnv.zedraInstallUrl,
       networkMismatch
     }),
-    [snapshot, connect, disconnect, networkMismatch, signAndSubmitTransaction]
+    [activeSnapshot, connect, disconnect, networkMismatch, signAndSubmitTransaction]
   );
 
   return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>;
