@@ -7,6 +7,8 @@ interface NavBarProps {
   theme: "dark" | "light";
   onToggleTheme: () => void;
   hideThemeToggle?: boolean;
+  backgroundAnimationEnabled?: boolean;
+  onToggleBackgroundAnimation?: () => void;
 }
 
 const navItems = [
@@ -15,7 +17,13 @@ const navItems = [
   { to: "/games", label: "Games" },
 ];
 
-export function NavBar({ theme, onToggleTheme, hideThemeToggle }: NavBarProps) {
+export function NavBar({
+  theme,
+  onToggleTheme,
+  hideThemeToggle,
+  backgroundAnimationEnabled,
+  onToggleBackgroundAnimation,
+}: NavBarProps) {
   const { networkMismatch } = useWallet();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -79,6 +87,16 @@ export function NavBar({ theme, onToggleTheme, hideThemeToggle }: NavBarProps) {
               {theme === "dark" ? "Light" : "Dark"}
             </button>
           )}
+          {onToggleBackgroundAnimation && (
+            <button
+              onClick={onToggleBackgroundAnimation}
+              className="hidden whitespace-nowrap rounded-nova-round bg-surface-glass px-nova-md py-nova-sm text-body text-text-secondary transition-colors hover:bg-surface-glass/80 hover:text-text-primary md:block"
+              type="button"
+              aria-label={`${backgroundAnimationEnabled ? "Disable" : "Enable"} background animation`}
+            >
+              {backgroundAnimationEnabled ? "Anim Off" : "Anim On"}
+            </button>
+          )}
           <WalletButton />
 
           {/* Mobile Menu Button */}
@@ -134,6 +152,18 @@ export function NavBar({ theme, onToggleTheme, hideThemeToggle }: NavBarProps) {
                   type="button"
                 >
                   {theme === "dark" ? "Switch to Light" : "Switch to Dark"}
+                </button>
+              )}
+              {onToggleBackgroundAnimation && (
+                <button
+                  onClick={() => {
+                    onToggleBackgroundAnimation();
+                    closeMobileMenu();
+                  }}
+                  className="rounded-nova-small px-nova-md py-nova-md text-left text-body text-text-secondary transition-colors hover:bg-surface-glass/50 hover:text-text-primary"
+                  type="button"
+                >
+                  {backgroundAnimationEnabled ? "Animation: Off" : "Animation: On"}
                 </button>
               )}
             </div>
