@@ -1,20 +1,30 @@
 import { useEffect, useRef } from "react";
 
-export function LivingBackground() {
+interface LivingBackgroundProps {
+  enabled?: boolean;
+}
+
+export function LivingBackground({ enabled = true }: LivingBackgroundProps) {
   const blob1Ref = useRef<HTMLDivElement>(null);
   const blob2Ref = useRef<HTMLDivElement>(null);
   const blob3Ref = useRef<HTMLDivElement>(null);
+  const animationRefs = useRef<Animation[]>([]);
 
   useEffect(() => {
-    // Animate blobs using Web Animations API for guaranteed animation
     const blob1 = blob1Ref.current;
     const blob2 = blob2Ref.current;
     const blob3 = blob3Ref.current;
 
     if (!blob1 || !blob2 || !blob3) return;
 
+    // Clean up existing animations
+    animationRefs.current.forEach((anim) => anim.cancel());
+    animationRefs.current = [];
+
+    if (!enabled) return;
+
     // Blob 1: Blue - moves and scales
-    blob1.animate(
+    const anim1 = blob1.animate(
       [
         { transform: "translate(0, 0) scale(1)" },
         { transform: "translate(10vw, 8vh) scale(1.15)" },
@@ -30,7 +40,7 @@ export function LivingBackground() {
     );
 
     // Blob 2: Cyan - moves and scales
-    blob2.animate(
+    const anim2 = blob2.animate(
       [
         { transform: "translate(0, 0) scale(1)" },
         { transform: "translate(-12vw, -10vh) scale(1.2)" },
@@ -46,7 +56,7 @@ export function LivingBackground() {
     );
 
     // Blob 3: Violet - moves and scales
-    blob3.animate(
+    const anim3 = blob3.animate(
       [
         { transform: "translate(0, 0) scale(1)" },
         { transform: "translate(8vw, 15vh) scale(1.25)" },
@@ -60,7 +70,16 @@ export function LivingBackground() {
         easing: "ease-in-out",
       }
     );
-  }, []);
+
+    animationRefs.current = [anim1, anim2, anim3];
+
+    return () => {
+      animationRefs.current.forEach((anim) => anim.cancel());
+      animationRefs.current = [];
+    };
+  }, [enabled]);
+
+  if (!enabled) return null;
 
   return (
     <div
