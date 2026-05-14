@@ -60,6 +60,25 @@
   animation: gamesBlobFloat 28s ease-in-out infinite;
 }
 
+.games-mobile-shell-animation-disabled .games-mobile-blob,
+.games-mobile-shell-animation-disabled .games-spinner {
+  animation: none !important;
+}
+
+.games-mobile-shell-animation-disabled *,
+.games-mobile-shell-animation-disabled *::before,
+.games-mobile-shell-animation-disabled *::after {
+  animation: none !important;
+  scroll-behavior: auto !important;
+  transition: none !important;
+}
+
+.games-mobile-shell-animation-disabled .games-icon-button:hover,
+.games-mobile-shell-animation-disabled .games-button:hover,
+.games-mobile-shell-animation-disabled .games-button-link:hover {
+  transform: none;
+}
+
 .games-mobile-blob-primary {
   width: min(44vw, 720px);
   height: min(44vw, 720px);
