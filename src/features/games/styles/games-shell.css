@@ -38,6 +38,28 @@
   padding: clamp(8px, 1vw, 18px);
 }
 
+.games-mobile-shell-animation-disabled {
+  --games-shell-width: min(100%, 72rem);
+  --games-gameplay-width: min(100%, 72rem);
+  --games-shell-bg:
+    linear-gradient(180deg, rgba(13, 13, 20, 0.94), rgba(8, 8, 13, 0.98)),
+    var(--bg-primary);
+  --games-card-bg:
+    linear-gradient(180deg, rgba(26, 26, 46, 0.84), rgba(17, 17, 30, 0.92));
+  --games-card-bg-strong:
+    linear-gradient(180deg, rgba(26, 26, 46, 0.9), rgba(17, 17, 30, 0.96));
+  --games-card-border: var(--surface-glass-border);
+  --games-card-border-strong: rgba(34, 232, 255, 0.24);
+  --games-accent: var(--nova-cyan);
+  --games-accent-strong: var(--nova-cyan);
+  --games-accent-ink: var(--text-inverse);
+  --games-highlight: var(--nova-cyan);
+  --games-highlight-soft: rgba(34, 232, 255, 0.14);
+  display: block;
+  padding: 0;
+  background: var(--bg-primary);
+}
+
 .games-mobile-background {
   position: fixed;
   inset: 0;
@@ -52,12 +74,35 @@
   background-size: 96px 96px, 96px 96px, auto, auto, auto;
 }
 
+.games-mobile-shell-animation-disabled .games-mobile-background {
+  display: none;
+}
+
 .games-mobile-blob {
   position: absolute;
   border-radius: 999px;
   filter: blur(110px);
   opacity: 0.24;
   animation: gamesBlobFloat 28s ease-in-out infinite;
+}
+
+.games-mobile-shell-animation-disabled .games-mobile-blob,
+.games-mobile-shell-animation-disabled .games-spinner {
+  animation: none !important;
+}
+
+.games-mobile-shell-animation-disabled *,
+.games-mobile-shell-animation-disabled *::before,
+.games-mobile-shell-animation-disabled *::after {
+  animation: none !important;
+  scroll-behavior: auto !important;
+  transition: none !important;
+}
+
+.games-mobile-shell-animation-disabled .games-icon-button:hover,
+.games-mobile-shell-animation-disabled .games-button:hover,
+.games-mobile-shell-animation-disabled .games-button-link:hover {
+  transform: none;
 }
 
 .games-mobile-blob-primary {
@@ -122,6 +167,42 @@
 .games-mobile-frame-gameplay {
   width: var(--games-gameplay-width);
   min-height: 100vh;
+}
+
+.games-mobile-shell-animation-disabled .games-mobile-frame {
+  min-height: 100vh;
+  margin: 0 auto;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.games-mobile-shell-animation-disabled .games-mobile-frame::before {
+  display: none;
+}
+
+.games-mobile-shell-animation-disabled .games-screen {
+  background: transparent;
+}
+
+.games-mobile-shell-animation-disabled .games-screen-content {
+  max-width: 72rem;
+  padding: var(--space-xxxl) var(--space-xxl);
+}
+
+.games-mobile-shell-animation-disabled .games-topbar {
+  position: static;
+  margin-right: calc(50% - 50vw);
+  margin-left: calc(50% - 50vw);
+  padding: var(--space-md) max(var(--space-xxl), calc((100vw - 72rem) / 2));
+  border-bottom-color: var(--surface-glass-border);
+  background: rgba(13, 13, 20, 0.8);
+}
+
+.games-mobile-shell-animation-disabled.games-mobile-shell-hub .games-topbar {
+  display: none;
 }
 
 .games-screen {
