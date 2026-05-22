@@ -149,28 +149,97 @@ export const HAND_RANKS: Record<number, string> = {
 
 export const TABLE_COLORS: Record<
   number,
-  { name: string; felt: string; rail: string; accent: string }
+  {
+    name: string;
+    felt: string;
+    rail: string;
+    accent: string;
+    light: {
+      felt: string;
+      feltDark: string;
+      rail: string;
+      railEdge: string;
+      accent: string;
+    };
+  }
 > = {
-  0: { name: "Nova Blue", felt: "#0f3a50", rail: "#1a5070", accent: "#00d4ff" },
+  0: {
+    name: "Nova Blue",
+    felt: "#0f3a50",
+    rail: "#1a5070",
+    accent: "#00d4ff",
+    light: {
+      felt: "#86d8ea",
+      feltDark: "#4ba9c4",
+      rail: "#b88a50",
+      railEdge: "#7a5430",
+      accent: "#0789b8"
+    }
+  },
   1: {
     name: "Classic Green",
     felt: "#1f4d2b",
     rail: "#0f1b17",
-    accent: "#2fbf71"
+    accent: "#2fbf71",
+    light: {
+      felt: "#8bd6a3",
+      feltDark: "#4eaa6e",
+      rail: "#b9854d",
+      railEdge: "#765030",
+      accent: "#16894f"
+    }
   },
-  2: { name: "Teal Noir", felt: "#0f3d3e", rail: "#0b1416", accent: "#28a5a8" },
+  2: {
+    name: "Teal Noir",
+    felt: "#0f3d3e",
+    rail: "#0b1416",
+    accent: "#28a5a8",
+    light: {
+      felt: "#87d9d4",
+      feltDark: "#45aaa8",
+      rail: "#a8865a",
+      railEdge: "#66523a",
+      accent: "#087d80"
+    }
+  },
   3: {
     name: "Indigo Steel",
     felt: "#1e2a44",
     rail: "#0c1016",
-    accent: "#5fa8ff"
+    accent: "#5fa8ff",
+    light: {
+      felt: "#a7bceb",
+      feltDark: "#6685c4",
+      rail: "#9a8468",
+      railEdge: "#5e5143",
+      accent: "#346ec7"
+    }
   },
-  4: { name: "Ember Red", felt: "#4a1c1c", rail: "#160b0b", accent: "#ff6b35" },
+  4: {
+    name: "Ember Red",
+    felt: "#4a1c1c",
+    rail: "#160b0b",
+    accent: "#ff6b35",
+    light: {
+      felt: "#dda19a",
+      feltDark: "#b65f55",
+      rail: "#b8794e",
+      railEdge: "#714230",
+      accent: "#b9472a"
+    }
+  },
   5: {
     name: "Olive Gold",
     felt: "#3f4a2a",
     rail: "#12150c",
-    accent: "#c9b458"
+    accent: "#c9b458",
+    light: {
+      felt: "#c3ca84",
+      feltDark: "#8e984a",
+      rail: "#b4914d",
+      railEdge: "#6d562b",
+      accent: "#8b7b22"
+    }
   }
 };
 

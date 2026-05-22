@@ -15,6 +15,12 @@ export interface PokerTheme {
     text: string;
     textSecondary: string;
     tableFeltLight: string;
+    lightFelt: string;
+    lightFeltDark: string;
+    lightRail: string;
+    lightRailEdge: string;
+    lightAccent: string;
+    lightAccentGlow: string;
 }
 
 /**
@@ -88,5 +94,11 @@ export function deriveThemeFromColor(colorIndex: number): PokerTheme {
 
         // Table specific: Lighten the felt for the table surface to pop against the dark background
         tableFeltLight: darken(base.felt, -15), // Lighten by 15 (moderate light)
+        lightFelt: base.light.felt,
+        lightFeltDark: base.light.feltDark,
+        lightRail: base.light.rail,
+        lightRailEdge: base.light.railEdge,
+        lightAccent: base.light.accent,
+        lightAccentGlow: hexToRgba(base.light.accent, 0.28),
     };
 }
