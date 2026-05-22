@@ -738,7 +738,13 @@ export function PokerGameplayController({ tableAddress }: PokerGameplayControlle
         "--poker-felt": theme.tableFeltLight,
         "--poker-felt-dark": theme.felt,
         "--poker-rail": theme.rail,
-        "--poker-glow": `${theme.accent}66`
+        "--poker-glow": `${theme.accent}66`,
+        "--poker-felt-light": theme.lightFelt,
+        "--poker-felt-light-dark": theme.lightFeltDark,
+        "--poker-rail-light": theme.lightRail,
+        "--poker-rail-light-edge": theme.lightRailEdge,
+        "--poker-accent-light": theme.lightAccent,
+        "--poker-glow-light": theme.lightAccentGlow
       }) as CSSProperties,
     [theme]
   );
