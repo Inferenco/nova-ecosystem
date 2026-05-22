@@ -12,11 +12,25 @@ import { useGamesNetwork } from "../hooks/useGamesNetwork";
 import { useChipActions } from "../hooks/poker/useChipActions";
 import { getProfiles, type UserProfile } from "../services/profiles";
 import { formatChips } from "../services/poker/chips";
-import { getTableAddress, getTableSummary } from "../services/poker/views";
+import type { DiscoveredTable } from "../services/poker/indexer";
+import { getAllSeats, getTableAddress, getTableSummary } from "../services/poker/views";
 import { buildChipBalanceKey, usePokerChipsStore } from "../stores/poker/chips";
 import { usePokerTablesStore } from "../stores/poker/tables";
+import { normalizeAddress } from "../utils/address";
 import "../styles/casino.css";
 import "../styles/poker-lobby.css";
+
+interface SeatedTableEntry {
+  table: DiscoveredTable;
+  seatIndex: number;
+  chipCount: number;
+  isSittingOut: boolean;
+}
+
+interface SeatedTablesResult {
+  key: string;
+  entries: SeatedTableEntry[];
+}
 
 function formatCedraCompact(balance: number): string {
   const raw = formatCedraFromOctas(BigInt(Math.max(balance, 0))).replace(/\s+CEDRA$/, "");
@@ -92,15 +106,34 @@ export function PokerLandingPage() {
 
   const [joinAddress, setJoinAddress] = useState("");
   const [adminProfiles, setAdminProfiles] = useState<Map<string, UserProfile | null>>(new Map());
+  const [seatedTablesResult, setSeatedTablesResult] = useState<SeatedTablesResult>({
+    key: "",
+    entries: []
+  });
+  const normalizedPlayerAddress = useMemo(() => normalizeAddress(address), [address]);
+  const seatedTablesLookupKey = useMemo(() => {
+    if (!wallet.connected || !normalizedPlayerAddress || tables.length === 0) {
+      return "";
+    }
+
+    return [
+      network,
+      normalizedPlayerAddress,
+      ...tables.map(
+        (table) =>
+          `${table.tableAddress}:${table.occupiedSeats}:${table.totalSeats}:${table.hasActiveGame}`
+      )
+    ].join("|");
+  }, [network, normalizedPlayerAddress, tables, wallet.connected]);
   const existingOwnedTableAddress = useMemo(() => {
-    const normalized = address.toLowerCase();
-    return tables.find((table) => table.owner.toLowerCase() === normalized)?.tableAddress ?? null;
+    const normalized = normalizeAddress(address);
+    return tables.find((table) => normalizeAddress(table.owner) === normalized)?.tableAddress ?? null;
   }, [address, tables]);
 
   useEffect(() => {
     if (!wallet.connected) return;
 
-    void refreshTables(network, 6);
+    void refreshTables(network, 20);
     void refreshChipBalance();
     void refreshCedraBalance();
   }, [network, refreshCedraBalance, refreshChipBalance, refreshTables, wallet.connected]);
@@ -165,10 +198,65 @@ export function PokerLandingPage() {
       });
   }, [adminProfiles, network, tables, wallet.connected]);
 
+  useEffect(() => {
+    if (!seatedTablesLookupKey) {
+      return;
+    }
+
+    let cancelled = false;
+
+    void (async () => {
+      const matches = await Promise.all(
+        tables
+          .filter((table) => table.occupiedSeats > 0)
+          .map(async (table): Promise<SeatedTableEntry | null> => {
+            try {
+              const seats = await getAllSeats(network, table.tableAddress, table.totalSeats);
+              const seatIndex = seats.findIndex(
+                (seat) => normalizeAddress(seat.playerAddress) === normalizedPlayerAddress
+              );
+
+              if (seatIndex < 0) {
+                return null;
+              }
+
+              const seat = seats[seatIndex];
+
+              return {
+                table,
+                seatIndex,
+                chipCount: seat.chipCount,
+                isSittingOut: seat.isSittingOut
+              };
+            } catch {
+              return null;
+            }
+          })
+      );
+
+      if (cancelled) return;
+
+      setSeatedTablesResult({
+        key: seatedTablesLookupKey,
+        entries: matches
+          .filter((entry): entry is SeatedTableEntry => entry !== null)
+          .sort((a, b) => Number(b.table.hasActiveGame) - Number(a.table.hasActiveGame))
+      });
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [network, normalizedPlayerAddress, seatedTablesLookupKey, tables]);
+
   const myTable = useMemo(() => {
-    const normalized = address.toLowerCase();
-    return tables.find((table) => table.owner.toLowerCase() === normalized) ?? null;
+    const normalized = normalizeAddress(address);
+    return tables.find((table) => normalizeAddress(table.owner) === normalized) ?? null;
   }, [address, tables]);
+  const seatedTables =
+    seatedTablesResult.key === seatedTablesLookupKey ? seatedTablesResult.entries : [];
+  const isLoadingSeatedTables =
+    Boolean(seatedTablesLookupKey) && seatedTablesResult.key !== seatedTablesLookupKey;
   const cedraDisplay = useMemo(() => formatCedraCompact(cedraBalance), [cedraBalance]);
 
   const handleJoin = useCallback(() => {
@@ -255,6 +343,54 @@ export function PokerLandingPage() {
                 ) : (
                   <div className="games-empty-state">
                     Create a table to host your own game and re-enter it from this panel.
+                  </div>
+                )}
+              </div>
+            ) : null}
+
+            {wallet.connected ? (
+              <div className="games-card games-poker-owner-card">
+                <div className="games-poker-owner-header">
+                  <div>
+                    <p className="games-section-kicker">Your Seats</p>
+                    <h2 className="games-section-title">Seated Tables</h2>
+                  </div>
+                  {seatedTables.length > 0 ? (
+                    <span className="games-poker-owner-badge">{seatedTables.length}</span>
+                  ) : null}
+                </div>
+
+                {isLoadingSeatedTables ? (
+                  <div className="games-empty-state">Checking your active seats...</div>
+                ) : seatedTables.length > 0 ? (
+                  <div className="games-poker-list-scroll">
+                    {seatedTables.map(({ table, seatIndex, chipCount, isSittingOut }) => (
+                      <Link
+                        key={table.tableAddress}
+                        className="games-poker-owner-row"
+                        to={`/games/poker/${table.tableAddress}`}
+                      >
+                        <TableAvatar
+                          avatarUrl={adminProfiles.get(table.owner)?.avatarUrl}
+                          colorIndex={table.colorIndex}
+                          fallback="♣"
+                        />
+                        <div className="games-poker-list-meta">
+                          <p className="games-poker-list-title">{table.name || "Nova Poker"}</p>
+                          <p className="games-poker-list-copy">
+                            Seat {seatIndex + 1} • {formatChips(chipCount)} chips •{" "}
+                            {table.occupiedSeats}/{table.totalSeats} seated
+                            {table.hasActiveGame ? " • LIVE" : ""}
+                            {isSittingOut ? " • Sitting out" : ""}
+                          </p>
+                        </div>
+                        <span className="games-button games-button-accent">Open</span>
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="games-empty-state">
+                    You are not seated at any discovered live tables yet.
                   </div>
                 )}
               </div>

@@ -73,6 +73,10 @@
   color: rgba(236, 230, 218, 0.54);
 }
 
+[data-theme="light"] .games-mobile-shell .games-poker-card-title {
+  color: rgba(10, 16, 33, 0.62);
+}
+
 .games-poker-create-icon {
   min-height: 70px;
   display: grid;
@@ -80,6 +84,10 @@
   font-family: "Sora", "Manrope", sans-serif;
   font-size: 2.4rem;
   color: #f4d58d;
+}
+
+[data-theme="light"] .games-mobile-shell .games-poker-create-icon {
+  color: #c98608;
 }
 
 .games-poker-owner-card {
@@ -117,6 +125,11 @@
   text-decoration: none;
 }
 
+[data-theme="light"] .games-mobile-shell .games-poker-owner-row {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.58);
+}
+
 .games-poker-list-scroll {
   display: grid;
   gap: 12px;
@@ -147,6 +160,10 @@
   flex-shrink: 0;
 }
 
+[data-theme="light"] .games-mobile-shell .games-poker-filter-placeholder {
+  color: rgba(10, 16, 33, 0.54);
+}
+
 .games-poker-color-grid,
 .games-poker-speed-grid {
   display: flex;
@@ -167,6 +184,13 @@
   box-shadow: 0 0 0 2px rgba(100, 211, 255, 0.22);
 }
 
+[data-theme="light"] .games-mobile-shell .games-poker-color-swatch.active {
+  border-color: #fff;
+  box-shadow:
+    0 0 0 2px rgba(15, 181, 232, 0.32),
+    0 8px 18px rgba(15, 23, 42, 0.14);
+}
+
 .games-poker-chip-seats {
   display: inline-flex;
   align-items: center;
@@ -177,6 +201,11 @@
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(214, 180, 109, 0.16);
   font-weight: 700;
+}
+
+[data-theme="light"] .games-mobile-shell .games-poker-chip-seats {
+  border-color: rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.58);
 }
 
 .games-poker-chip-seats::before {
@@ -197,6 +226,11 @@
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="light"] .games-mobile-shell .games-poker-switch-row {
+  border-color: rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.58);
 }
 
 .games-poker-switch-row input {

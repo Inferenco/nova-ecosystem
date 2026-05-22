@@ -1,9 +1,21 @@
-import { render } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { GamesMobileLayout } from "./GamesMobileLayout";
 
 vi.mock("@/components/layout/NavBar", () => ({
-  NavBar: () => <nav data-testid="site-nav" />
+  NavBar: ({
+    backgroundAnimationEnabled,
+    onToggleBackgroundAnimation
+  }: {
+    backgroundAnimationEnabled?: boolean;
+    onToggleBackgroundAnimation?: () => void;
+  }) => (
+    <nav data-testid="site-nav">
+      <button type="button" onClick={onToggleBackgroundAnimation}>
+        {backgroundAnimationEnabled ? "Anim Off" : "Anim On"}
+      </button>
+    </nav>
+  )
 }));
 
 vi.mock("@/hooks/useNovaThemeBridge", () => ({
@@ -38,13 +50,26 @@ describe("GamesMobileLayout", () => {
     expect(container.querySelector("[data-testid='site-nav']")).toBeInTheDocument();
   });
 
-  it("keeps games animations enabled when the shared preference is enabled", () => {
+  it("keeps the hub site nav available when games animations are enabled", () => {
     window.localStorage.setItem("background_animation_enabled", "true");
 
     const { container } = renderGamesLayout();
 
     expect(container.firstElementChild).not.toHaveClass("games-mobile-shell-animation-disabled");
-    expect(container.querySelector("[data-testid='site-nav']")).not.toBeInTheDocument();
+    expect(container.querySelector("[data-testid='site-nav']")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Anim Off" })).toBeInTheDocument();
+  });
+
+  it("lets the hub animation control toggle back off", () => {
+    window.localStorage.setItem("background_animation_enabled", "true");
+
+    const { container } = renderGamesLayout();
+
+    fireEvent.click(screen.getByRole("button", { name: "Anim Off" }));
+
+    expect(window.localStorage.getItem("background_animation_enabled")).toBe("false");
+    expect(container.firstElementChild).toHaveClass("games-mobile-shell-animation-disabled");
+    expect(screen.getByRole("button", { name: "Anim On" })).toBeInTheDocument();
   });
 
   it("keeps the games topbar available on nested games routes when animations are disabled", () => {
