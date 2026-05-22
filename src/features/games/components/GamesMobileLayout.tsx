@@ -7,9 +7,9 @@ import "../styles/games-shell.css";
 export function GamesMobileLayout() {
   const isGameplay = Boolean(useMatch("/games/poker/:tableAddress"));
   const isHub = Boolean(useMatch({ path: "/games", end: true }));
-  const { enabled: backgroundAnimationEnabled, setEnabled } = useBackgroundAnimation();
+  const { enabled: backgroundAnimationEnabled, toggle: toggleBackgroundAnimation } = useBackgroundAnimation();
   const { theme, setTheme, isInNovaWallet } = useNovaThemeBridge();
-  const showSiteNav = !backgroundAnimationEnabled && isHub;
+  const showSiteNav = isHub;
 
   return (
     <div
@@ -25,7 +25,7 @@ export function GamesMobileLayout() {
           onToggleTheme={() => setTheme(theme === "dark" ? "light" : "dark")}
           hideThemeToggle={isInNovaWallet}
           backgroundAnimationEnabled={backgroundAnimationEnabled}
-          onToggleBackgroundAnimation={() => setEnabled(true)}
+          onToggleBackgroundAnimation={toggleBackgroundAnimation}
         />
       ) : null}
       <div className="games-mobile-background" aria-hidden="true">

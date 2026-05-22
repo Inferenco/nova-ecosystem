@@ -61,6 +61,12 @@
   letter-spacing: 0.04em;
 }
 
+[data-theme="light"] .games-mobile-shell .games-casino-hero-pills span {
+  background: rgba(15, 23, 42, 0.05);
+  border-color: rgba(15, 23, 42, 0.08);
+  color: rgba(10, 16, 33, 0.72);
+}
+
 .games-casino-summary-card {
   gap: 18px;
 }
@@ -86,6 +92,18 @@
   background: rgba(255, 255, 255, 0.035);
 }
 
+[data-theme="light"] .games-mobile-shell .games-casino-summary-rail,
+[data-theme="light"] .games-mobile-shell .games-casino-stat-card,
+[data-theme="light"] .games-mobile-shell .games-casino-boost-row,
+[data-theme="light"] .games-mobile-shell .games-casino-game-row,
+[data-theme="light"] .games-mobile-shell .games-poker-list-row,
+[data-theme="light"] .games-mobile-shell .games-casino-live-tile {
+  border-color: rgba(15, 23, 42, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(244, 247, 252, 0.5)),
+    rgba(255, 255, 255, 0.64);
+}
+
 .games-casino-summary-item {
   display: flex;
   align-items: center;
@@ -109,6 +127,12 @@
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+[data-theme="light"] .games-mobile-shell .games-casino-summary-item-label,
+[data-theme="light"] .games-mobile-shell .games-casino-stat-label,
+[data-theme="light"] .games-mobile-shell .games-casino-stat-unit {
+  color: rgba(10, 16, 33, 0.54);
 }
 
 .games-casino-free-card,
@@ -157,6 +181,10 @@
   font-size: clamp(1.18rem, 1.6vw, 1.52rem);
   font-weight: 700;
   line-height: 1.08;
+}
+
+[data-theme="light"] .games-mobile-shell .games-casino-stat-value {
+  color: var(--text-primary);
 }
 
 .games-casino-stat-value-balance {
@@ -229,6 +257,13 @@
   line-height: 1.52;
 }
 
+[data-theme="light"] .games-mobile-shell .games-casino-boost-copy,
+[data-theme="light"] .games-mobile-shell .games-casino-game-copy,
+[data-theme="light"] .games-mobile-shell .games-poker-list-copy,
+[data-theme="light"] .games-mobile-shell .games-casino-disclaimer {
+  color: rgba(10, 16, 33, 0.66);
+}
+
 .games-casino-chip-inline {
   display: inline-flex;
   align-items: center;
@@ -290,6 +325,11 @@
   letter-spacing: 0.04em;
 }
 
+[data-theme="light"] .games-mobile-shell .games-casino-live-points span {
+  background: rgba(15, 23, 42, 0.05);
+  color: rgba(10, 16, 33, 0.72);
+}
+
 .games-casino-live-actions {
   display: flex;
   flex-wrap: wrap;
@@ -317,6 +357,10 @@
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+[data-theme="light"] .games-mobile-shell .games-casino-store-footer {
+  border-top-color: rgba(15, 23, 42, 0.08);
+}
+
 .games-casino-store-status {
   display: inline-flex;
   align-items: center;
@@ -330,6 +374,12 @@
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.04em;
+}
+
+[data-theme="light"] .games-mobile-shell .games-casino-store-status {
+  background: rgba(15, 181, 232, 0.1);
+  border-color: rgba(15, 181, 232, 0.2);
+  color: #075f7a;
 }
 
 .games-poker-table-icon {
