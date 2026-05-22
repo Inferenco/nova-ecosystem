@@ -27,6 +27,11 @@ interface SeatedTableEntry {
   isSittingOut: boolean;
 }
 
+interface SeatedTablesResult {
+  key: string;
+  entries: SeatedTableEntry[];
+}
+
 function formatCedraCompact(balance: number): string {
   const raw = formatCedraFromOctas(BigInt(Math.max(balance, 0))).replace(/\s+CEDRA$/, "");
   const [whole, decimal = ""] = raw.split(".");
@@ -101,8 +106,25 @@ export function PokerLandingPage() {
 
   const [joinAddress, setJoinAddress] = useState("");
   const [adminProfiles, setAdminProfiles] = useState<Map<string, UserProfile | null>>(new Map());
-  const [seatedTables, setSeatedTables] = useState<SeatedTableEntry[]>([]);
-  const [isLoadingSeatedTables, setIsLoadingSeatedTables] = useState(false);
+  const [seatedTablesResult, setSeatedTablesResult] = useState<SeatedTablesResult>({
+    key: "",
+    entries: []
+  });
+  const normalizedPlayerAddress = useMemo(() => normalizeAddress(address), [address]);
+  const seatedTablesLookupKey = useMemo(() => {
+    if (!wallet.connected || !normalizedPlayerAddress || tables.length === 0) {
+      return "";
+    }
+
+    return [
+      network,
+      normalizedPlayerAddress,
+      ...tables.map(
+        (table) =>
+          `${table.tableAddress}:${table.occupiedSeats}:${table.totalSeats}:${table.hasActiveGame}`
+      )
+    ].join("|");
+  }, [network, normalizedPlayerAddress, tables, wallet.connected]);
   const existingOwnedTableAddress = useMemo(() => {
     const normalized = normalizeAddress(address);
     return tables.find((table) => normalizeAddress(table.owner) === normalized)?.tableAddress ?? null;
@@ -177,17 +199,11 @@ export function PokerLandingPage() {
   }, [adminProfiles, network, tables, wallet.connected]);
 
   useEffect(() => {
-    const normalizedPlayerAddress = normalizeAddress(address);
-
-    if (!wallet.connected || !normalizedPlayerAddress || tables.length === 0) {
-      setSeatedTables([]);
-      setIsLoadingSeatedTables(false);
+    if (!seatedTablesLookupKey) {
       return;
     }
 
     let cancelled = false;
-
-    setIsLoadingSeatedTables(true);
 
     void (async () => {
       const matches = await Promise.all(
@@ -220,23 +236,27 @@ export function PokerLandingPage() {
 
       if (cancelled) return;
 
-      setSeatedTables(
-        matches
+      setSeatedTablesResult({
+        key: seatedTablesLookupKey,
+        entries: matches
           .filter((entry): entry is SeatedTableEntry => entry !== null)
           .sort((a, b) => Number(b.table.hasActiveGame) - Number(a.table.hasActiveGame))
-      );
-      setIsLoadingSeatedTables(false);
+      });
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [address, network, tables, wallet.connected]);
+  }, [network, normalizedPlayerAddress, seatedTablesLookupKey, tables]);
 
   const myTable = useMemo(() => {
     const normalized = normalizeAddress(address);
     return tables.find((table) => normalizeAddress(table.owner) === normalized) ?? null;
   }, [address, tables]);
+  const seatedTables =
+    seatedTablesResult.key === seatedTablesLookupKey ? seatedTablesResult.entries : [];
+  const isLoadingSeatedTables =
+    Boolean(seatedTablesLookupKey) && seatedTablesResult.key !== seatedTablesLookupKey;
   const cedraDisplay = useMemo(() => formatCedraCompact(cedraBalance), [cedraBalance]);
 
   const handleJoin = useCallback(() => {
